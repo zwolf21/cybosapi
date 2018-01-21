@@ -15,5 +15,4 @@ man/
 *.json
 keys.py
 db.sqlite3
-test.py
 *.xls*
