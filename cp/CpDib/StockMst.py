@@ -227,6 +227,3 @@ value = StockMst.GetHeaderValue(type)
 
 	'''
 }
-
-
-import win32com.client
