@@ -7,7 +7,10 @@ DESCRIPTION = {
 	'com_type': 'Request/Reply',
 	'summary': '',
 	'point': '''
-	'''
+	''',
+	'defaults': [
+		'종목코드', '시간', '현재가',
+	]
 }
 
 MODULE_NAME = 'CpSysDib.MarketEye'
@@ -26,11 +29,11 @@ METHODS_INTERFACES = {
 					3: "전일대비",
 					4: "현재가",
 					5: "시가",
-					6: "고가",
+					6: "고가", # 필수 
 					7: "저가",
 					8: "매도호가",
 					9: "매수호가",
-					10: "거래량",
+					10: "거래량", # 필수 
 					11: "거래대금",
 					12: "장구분",
 					13: "총매도호가잔량",
