@@ -77,6 +77,8 @@ METHODS_INTERFACES = {
 
 
 def get_stockmstm(code, fields):
+	if isinstance(code, (list, tuple, set)):
+		code = ''.join(code)
 	cp = win32com.client.Dispatch(MODULE_NAME)
 	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code)
 	cp = set_inputvalue(cp, setinputvalue_argset)
@@ -92,4 +94,3 @@ def get_stockmstm(code, fields):
 			row[colnm] = data
 		records.append(row)
 	return records
-

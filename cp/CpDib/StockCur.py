@@ -1,3 +1,7 @@
+import win32com.client
+
+from ..utils import *
+
 
 DESCRIPTION = {
 	'summary': '현재가 시간대별 체결 7021,7024',
@@ -31,12 +35,102 @@ DESCRIPTION = {
 		   데이터에 왜곡이 있는 경우가 많아 잘 쓰질 않습니다.
 		17.순간체결수량 -참조로만.
 
-...
-    
+	''',
+	    
     'default': [
 		'종목코드', '종목명', '전일대비', '시간', '시가', '고가', '저가'
-		,'매도호가', '매수호가', '누적거래량', '누적거래대금', '현재가', '체결상태', '누적매도체결'
-		'누적매수체결', '순간체결량', '시간'
+		,'매도호가', '매수호가', '누적거래량', '누적거래대금', '현재가', '체결상태', '누적매도체결수량',
+		'누적매수체결수량', '순간체결수량',
 	]
 
 }
+
+MODULE_NAME = 'dscbo1.StockCur'
+
+METHODS_INTERFACES = {
+
+	'SetInputValue': {
+		'code': {
+			'position': 0,
+			'type': ['str'],
+			'essential': True,
+		},
+	},
+	'GetHeaderValue': {
+		'type': {
+			'position': 0,
+			'type': ['long'],
+			'essential': True,
+			'options': {
+				0  : "종목코드",
+				1  : "종목명",
+				2  : "전일대비",
+				3  : "시간",
+				4  : "시가",
+				5  : "고가",
+				6  : "저가",
+				7  : "매도호가",
+				8  : "매수호가",
+				9  : "누적거래량",
+				10 : "누적거래대금",
+				13 : "현재가",
+				14 : "체결상태",
+				15 : "누적매도체결수량",
+				16 : "누적매수체결수량",
+				17 : "순간체결수량",
+				18 : "시간",
+				19 : "예상체결가구분플래그",
+				20 : "장구분플래그",
+				21 : "장전시간외거래량",
+				22 : "대비부호",
+				23 : "LP보유수량",
+				24 : "LP보유수량대비",
+				25 : "LP보유율",
+				26 : "체결상태",
+				27 : "누적매도체결수량",
+				28 : "누적매수체결수량",
+			},
+		}
+	},
+	'GetDataValue': {
+		'type': {
+			'position': 0,
+			'type': ['long'],
+			'essential': True,
+		},
+		'index': {
+			'position': 1,
+			'type': ['long'],
+			'essential': True,
+		},
+	},	
+}
+
+def get_stockcur(code, fields = DESCRIPTION.get('default')):
+	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code) 
+	cp = win32com.client.Dispatch(MODULE_NAME)
+	# cp = set_inputvalue(cp, setinputvalue_argset, blockrequest=False)
+	cp.SetInputValue(0, code)
+	ext = {}
+	for colnm in fields:
+		arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=colnm)
+		print('arg:', arg)
+		value = cp.GetHeaderValue(arg)
+		ext[colnm] = value
+	return ext
+
+def get_stockchart(extras=None, **kwargs):
+	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)
+	cp = win32com.client.Dispatch(MODULE_NAME)
+	cp = set_inputvalue(cp, setinputvalue_argset)
+	records =  output_to_records(METHODS_INTERFACES, cp, setinputvalue_argset)
+	if extras:
+		ext = {}
+		for colnm in extras:
+			arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=colnm)
+			value = cp.GetHeaderValue(arg)
+			ext[colnm] = value
+		for row in records:
+			row.update(ext)
+	return records
+

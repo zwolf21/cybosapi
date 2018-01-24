@@ -1,3 +1,7 @@
+import win32com.client
+
+from ..utils import *
+
 DESCRIPTION = {
 	'summary': '복수 종목 일괄조회 7059',
 	'point': '''
@@ -21,10 +25,99 @@ type 설명(StockMst에 없는 정보)
    당시로서는 이미 효율적이 되서 HMM 이나 로켓사이언스로는 시장에서 수익내기 어려웠음.    
    2010년경 국내 한 시스테머가 열역학을 이용한 체결강도로 큰 수익 내고 은퇴한다고 인증해서 인구에 회자됨. 
 
-	'''
+   ''',
 	'default': [
 		'종목코드', '종목명', '전일대비', '현재가', '시가', '고가', '거래량','거래대금'
 		, '외국인보유비율','체결강도'
 	]
 
 }
+
+
+MODULE_NAME = 'dscbo1.StockMst2'
+
+METHODS_INTERFACES = {
+
+	'SetInputValue': {
+		'code': {
+			'position': 0,
+			'type': ['str'],
+			'essential': True,
+		},
+	},
+	'GetHeaderValue': {
+		'type': {
+			'position': 0,
+			'type': ['long'],
+			'essential': True,
+			'options': {
+				0: 'rows',
+			},
+		}
+	},
+	'GetDataValue': {
+		'type': {
+			'position': 0,
+			'type': ['str'],
+			'essential': True,
+			'options': {
+				0 : "종목코드",
+				1 : "종목명",
+				2 : "시간",
+				3 : "현재가",
+				4 : "전일대비",
+				5 : "상태구분 ",
+				6 : "시가",
+				7 : "고가",
+				8 : "저가",
+				9 : "매도호가",
+				10: "매수호가",
+				11: "거래량단위1주",
+				12: "거래대금단위천원",
+				13: "총매도잔량",
+				14: "총매수잔량",
+				15: "매도잔량",
+				16: "매수잔량",
+				17: "상장주식수",
+				18: "외국인보유비율%",
+				19: "전일종가",
+				20: "전일거래량",
+				21: "체결강도",
+				22: "순간체결량",
+				23: "체결가비교Flag",
+				24: "호가비교Flag",
+				25: "동시호가구분",
+				26: "예상체결가",
+				27: "예상체결가전일대비",
+				28: "예상체결가상태구분",
+				29: "예상체결가거래량",
+			}
+		},
+		'index': {
+			'position': 1,
+			'type': ['long'],
+			'essential': True,
+		},
+	},	
+}
+
+
+
+def get_stockmst2(code, fields):
+	if isinstance(code, (list, tuple, set)):
+		code = ','.join(code)
+	cp = win32com.client.Dispatch(MODULE_NAME)
+	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code)
+	cp = set_inputvalue(cp, setinputvalue_argset)
+	nrows_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
+	nrows = cp.GetHeaderValue(nrows_arg)
+
+	records = []
+	for r in range(nrows):
+		row = {}
+		for colnm in fields:
+			args = encode_args(METHODS_INTERFACES, 'GetDataValue', indexed=False, flated=True, type=colnm, index=r)
+			data = cp.GetDataValue(*args)
+			row[colnm] = data
+		records.append(row)
+	return records

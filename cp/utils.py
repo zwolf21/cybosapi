@@ -132,7 +132,8 @@ def encode_args(method_info, method_name, indexed=True,  flated=False, **kwargs)
 def set_inputvalue(cp, argset, blockrequest=True):
 	for idx, arg in argset:
 		cp.SetInputValue(idx, arg)
-	cp.BlockRequest()
+	if blockrequest:
+		cp.BlockRequest()
 	return cp
 
 
