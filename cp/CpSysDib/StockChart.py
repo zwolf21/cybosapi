@@ -220,6 +220,7 @@ def get_stockchart(extras=None, **kwargs):
 	cp = set_inputvalue(cp, setinputvalue_argset)
 	records =  output_to_records(METHODS_INTERFACES, cp, setinputvalue_argset)
 	if extras:
+		extras = expand_field_fnmatch(METHODS_INTERFACES, 'GetHeaderValue', extras)
 		ext = {}
 		for colnm in extras:
 			arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=colnm)

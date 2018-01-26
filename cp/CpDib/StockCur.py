@@ -109,28 +109,10 @@ METHODS_INTERFACES = {
 def get_stockcur(code, fields = DESCRIPTION.get('default')):
 	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code) 
 	cp = win32com.client.Dispatch(MODULE_NAME)
-	# cp = set_inputvalue(cp, setinputvalue_argset, blockrequest=False)
 	cp.SetInputValue(0, code)
 	ext = {}
 	for colnm in fields:
 		arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=colnm)
-		print('arg:', arg)
 		value = cp.GetHeaderValue(arg)
 		ext[colnm] = value
 	return ext
-
-def get_stockchart(extras=None, **kwargs):
-	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)
-	cp = win32com.client.Dispatch(MODULE_NAME)
-	cp = set_inputvalue(cp, setinputvalue_argset)
-	records =  output_to_records(METHODS_INTERFACES, cp, setinputvalue_argset)
-	if extras:
-		ext = {}
-		for colnm in extras:
-			arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=colnm)
-			value = cp.GetHeaderValue(arg)
-			ext[colnm] = value
-		for row in records:
-			row.update(ext)
-	return records
-

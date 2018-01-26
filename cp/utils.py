@@ -4,6 +4,26 @@ from itertools import zip_longest
 
 from listorm import Listorm
 
+
+
+def expand_field_fnmatch(method_info, method_name, fields):
+	if fields is None:
+		fields = []
+	optsets = method_info[method_name]['type'].get('options')
+	if isinstance(fields, str):
+		fields = [fields]
+
+	opts = []
+	for f in fields:
+		for idx, opt in optsets.items():
+			if fnmatch.fnmatch(opt, f):
+				if opt in opts:
+					continue
+				if fnmatch.fnmatch(opt, f):
+					opts.append(opt)
+	return opts
+
+
 def _encode_options(method_info, method_name, argname, optionvals, many=True):
 	optsets = method_info[method_name][argname].get('options')
 	if optsets is None:
@@ -137,9 +157,8 @@ def set_inputvalue(cp, argset, blockrequest=True):
 	return cp
 
 
-def _decode_options(method_info, method_name, argset):
+def decode_options(method_info, method_name, argset):
 	arginfo = method_info[method_name]
-
 	kwargset = {}
 	for pos, rawarg in argset:
 		for argname, info in arginfo.items():
@@ -156,7 +175,7 @@ def _decode_options(method_info, method_name, argset):
 	return kwargset
 
 def output_to_records(method_info, cp, argset):
-	set_inputvalue_kwargs = _decode_options(method_info, 'SetInputValue', argset)
+	set_inputvalue_kwargs = decode_options(method_info, 'SetInputValue', argset)
 	header = set_inputvalue_kwargs['field']
 	ncols_argset = encode_args(method_info, 'GetHeaderValue', flated=True, indexed=False, type='columns')
 	nrows_argset = encode_args(method_info, 'GetHeaderValue', flated=True, indexed=False, type='rows')
@@ -172,6 +191,7 @@ def output_to_records(method_info, cp, argset):
 			row.append(data)
 		records.append(dict(zip(header, row)))
 	return records
+
 
 
 

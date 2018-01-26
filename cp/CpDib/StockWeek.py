@@ -1,3 +1,6 @@
+import win32com.client
+
+from ..utils import *
 
 DESCRIPTION = {
 	'summary': '최장 10년 과거데이터 7026',
@@ -41,10 +44,93 @@ type: 데이터 종류
 		'종목코드', '일자', '시가', '고가','저가','종가', '누적거래량'
 		,'외인보유', '외인보유전일대비', '외인비중'
 	]
-
-    
-	
 }
 
+MODULE_NAME = 'dscbo1.StockWeek'
 
 
+METHODS_INTERFACES = {
+
+    'SetInputValue': {
+        'code': {
+            'position': 0,
+            'type': ['str'],
+            'essential': True,
+        },
+    },
+    'GetHeaderValue': {
+        'type': {
+            'position': 0,
+            'type': ['long'],
+            'essential': True,
+            'options': {
+                0: '종목코드',
+                1: 'rows',
+                2: '날짜',
+            },
+        },
+    },
+    'GetDataValue': {
+        'type': {
+            'position': 0,
+            'type': ['long'],
+            'essential': True,
+            'options': {
+                0: '일자',
+                1: '시가',
+                2: '고가',
+                3: '저가',
+                4: '종가',
+                5: '전일대비',
+                6: '누적거래량',
+                7: '외인보유',
+                8: '외인보유전일대비',
+                9: '외인비중',
+                10: '등락률',
+                11: '대비부호',
+                12: '기관순매수수량',
+                13: "시간외단일가시가",
+				14: "시간외단일가고가",
+				15: "시간외단일가저가",
+				16: "시간외단일가종가",
+				17: "시간외단일가대비부호",
+				18: "시간외단일가전일대비",
+				19: "시간외단일가거래량",
+            },
+        },
+        'index': {
+            'position': 1,
+            'type': ['long'],
+            'essential': True,
+        },
+    },  
+}
+
+def get_stockweek(extras, fields=None,**kwargs):
+    setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)
+    cp = win32com.client.Dispatch(MODULE_NAME)
+    cp = set_inputvalue(cp, setinputvalue_argset)
+
+    extras = expand_field_fnmatch(METHODS_INTERFACES, 'GetHeaderValue', extras)
+    fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetDataValue', fields)
+
+    headerset = {}
+    for h in extras:
+        harg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=h)
+        headerset[h] = cp.GetHeaderValue(harg)
+
+    nrow_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
+    nrows = cp.GetHeaderValue(nrow_arg) 
+
+    records = []
+    for r in range(nrows):
+        row = {}
+        for f in fields:
+            farg = encode_args(
+                METHODS_INTERFACES, 'GetDataValue', indexed=False, type=f, index=r
+            )
+            value = cp.GetDataValue(*farg)
+            row[f] = value
+        row.update(headerset)
+        records.append(row)
+    return records

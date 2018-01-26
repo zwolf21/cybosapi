@@ -1,3 +1,8 @@
+import win32com.client
+
+from ..utils import *
+
+
 
 DESCRIPTION = {
 	'summary': '주식 현재가 관련데이터 7021',
@@ -56,8 +61,6 @@ type 설명
     
 	
 }
-
-
 
 
 MODULE_NAME = 'dscbo1.StockMst'
@@ -166,6 +169,7 @@ def get_stockmst(code, fields):
 	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code)
 	cp = set_inputvalue(cp, setinputvalue_argset)
 	ext = {}
+	fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetHeaderValue', fields)
 	for colnm in fields:
 		arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=colnm)
 		value = cp.GetHeaderValue(arg)

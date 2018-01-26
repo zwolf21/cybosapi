@@ -1,3 +1,6 @@
+import win32com.client
+
+from ..utils import *
 
 DESCRIPTION = {
 	'summary': '호가 잔량 7024',
@@ -20,3 +23,105 @@ DESCRIPTION = {
  
 }
 
+
+MODULE_NAME = 'dscbo1.StockBid'
+
+METHODS_INTERFACES = {
+
+    'SetInputValue': {
+        'code': {
+            'position': 0,
+            'type': ['str'],
+            'essential': True,
+        },
+        'count': {
+            'position': 2,
+            'type': ['long'],
+            'essential': True,
+        },
+        'contract_type':{
+            'position': 3,
+            'type': ['char'],
+            'essential': True,
+            'options': {
+                ord('C'): '체결가비교방식',
+                ord('H'): '호가비교방식',
+            },
+            'default': ord('C')
+        },
+        'date': {
+            'position': 4,
+            'type': ['str'],
+            'essential': False,
+        }
+        
+    },
+    'GetHeaderValue': {
+        'type': {
+            'position': 0,
+            'type': ['long'],
+            'essential': True,
+            'options': {
+                0: '종목코드',
+                2: 'rows',
+                3: '누적매도체결량',
+                4: '누적매수체결량',
+                5: '체결비교방식',
+            }
+        },
+    },
+    'GetDataValue': {
+        'type': {
+            'position': 0,
+            'type': ['long'],
+            'essential': True,
+            'options': {
+                0: '시각',
+                1: '전일대비',
+                2: '매도호가',
+                3: '매수호가',
+                4: '현재가',
+                5: '거래량',
+                6: '순간체결량',
+                7: '체결상태',
+                8: '체결강도',
+                9: '시각(초)',
+                10: '장구분플래그',
+            },
+        },
+        'index': {
+            'position': 1,
+            'type': ['long'],
+            'essential': True,
+        },
+    },  
+}
+
+def get_stockbid(extras, fields=None,**kwargs):
+    setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)
+    cp = win32com.client.Dispatch(MODULE_NAME)
+    cp = set_inputvalue(cp, setinputvalue_argset)
+
+    extras = expand_field_fnmatch(METHODS_INTERFACES, 'GetHeaderValue', extras)
+    fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetDataValue', fields)
+
+    headerset = {}
+    for h in extras:
+        harg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=h)
+        headerset[h] = cp.GetHeaderValue(harg)
+
+    nrow_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
+    nrows = cp.GetHeaderValue(nrow_arg) 
+
+    records = []
+    for r in range(nrows):
+        row = {}
+        for f in fields:
+            farg = encode_args(
+                METHODS_INTERFACES, 'GetDataValue', indexed=False, type=f, index=r
+            )
+            value = cp.GetDataValue(*farg)
+            row[f] = value
+        row.update(headerset)
+        records.append(row)
+    return records

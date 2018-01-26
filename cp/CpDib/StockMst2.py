@@ -112,6 +112,7 @@ def get_stockmst2(code, fields):
 	nrows_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
 	nrows = cp.GetHeaderValue(nrows_arg)
 
+	fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetDataValue', fields)
 	records = []
 	for r in range(nrows):
 		row = {}
