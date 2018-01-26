@@ -1,14 +1,14 @@
-CpDib.StockMst	#주식 현재가 관련데이터 7021
+﻿CpDib.StockMst	#주식 현재가 관련데이터 7021
 CpDib.MstM	#복수 종목 조회 7059
 CpDib.StockMst2	#복수 종목 일괄조회 7059
 CpDib.StockCur	#현재가 시간대별 체결 7021,7024
-CpDib.StrockJpBid2	#매수,매도 10호가 잔량  7021
+CpDib.StockJpBid2	#매수,매도 10호가 잔량  7021 x
 CpDib.StockBid	#호가 잔량 7024
 CpDib.StockWeek	#시간대별 체결값 7026
 CpDib.StockIndexIR	# 업종코드 관련데이터 7035
-CpDib.StockIndexIChart	# 업종코드 관련데이터 7036
-CpDib.StockIndexIS	# 업종코드 관련데이터 7036
-CpDib.CpSvr7819	# 증시자금 데이터 7819
+CpDib.StockIndexIChart	# 업종코드 관련데이터 7036 x
+CpDib.StockIndexIS	# 업종코드 관련데이터 7036 x
+CpDib.CpSvr7819	# 증시자금 데이터 7819 x
 CpDib.CpSvr7819C	# 6년, 1년 종류별 증시 자금 데이터 7819
 CpDib.CpSvr8081	# 종류별 체결강도 8081
 CpDib.CpSvr8082	# 종목 업종별 체결강도 8082
