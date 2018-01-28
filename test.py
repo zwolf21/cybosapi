@@ -8,6 +8,7 @@ from cp.CpDib.StockCur import get_stockcur
 from cp.CpDib.StockJpBid2 import get_stockjpbid
 from cp.CpDib.StockBid import get_stockbid
 from cp.CpDib.StockWeek import get_stockweek
+from cp.CpDib.CpSvr7819C import get_svr7819c
 
 # r = get_marketeye(
 # 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
@@ -17,7 +18,7 @@ from cp.CpDib.StockWeek import get_stockweek
 # print(pd.DataFrame(r))
 
 # r = get_marketeye(
-# 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간'], 
+# 	code='A003540', field=['현재가', 'PER', 'EPS', '최근분기년*'], 
 # 	contract='체결가비교방식'
 # )
 
@@ -39,7 +40,6 @@ from cp.CpDib.StockWeek import get_stockweek
 # 	stockadj = '수정',
 # 	extras = ['code', '*한가']
 # )
-
 # for row in r:
 # 	print(row)
 
@@ -55,16 +55,16 @@ from cp.CpDib.StockWeek import get_stockweek
 
 # r = get_stockmstm(
 # 	code= ['A003540','A000060','A000010'],
-# 	# fields = [
-# 	# 	'종목코드', '종목명', '대비', '대비구분코드', '현재가', '매도호가', '매수호가', '거래량', '장구분플래그', '예상*'
-# 	# ]
+# 	fields = [
+# 		'종목코드', '종목명', '대비', '대비구분코드', '현재가', '매도호가', '매수호가', '거래량', '장구분플래그', '예상*'
+# 	]
 # )
 # for row in r:
 # 	print(row)
 
-print('='*50)
-r = get_stockcur(code='A003540')
-print(r)
+# print('='*50)
+# r = get_stockcur(code='A003540')
+# print(r)
 
 
 # import pythoncom
@@ -102,3 +102,6 @@ print(r)
 # for row in r:
 # 	print(row)
 
+# r = get_svr7819c(kind='미수금잔고', period='1년')
+# for row in r:
+# 	print(row)

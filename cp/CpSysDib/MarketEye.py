@@ -1,6 +1,4 @@
-import win32com.client
-
-from ..utils import *
+from ..core.cporm import Cporm
 
 
 DESCRIPTION = {
@@ -312,17 +310,14 @@ METHODS_INTERFACES = {
 }
 
 
+
 def get_marketeye(**kwargs):
-	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)
-	cp = win32com.client.Dispatch(MODULE_NAME)
-	cp = set_inputvalue(cp, setinputvalue_argset)
-	records =  output_to_records(METHODS_INTERFACES, cp, setinputvalue_argset)
+	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+	crm.set_inputvalues(**kwargs)
+	crm.blockrequest()
+	ordered_fields = crm.get_ordered_fields('SetInputValue', **kwargs)
+	records = crm.get_datavalue_table(ordered_fields)
 	return records
-
-
-
-
-
 
 
 

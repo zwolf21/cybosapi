@@ -1,6 +1,4 @@
-import win32com.client
-
-from ..utils import *
+from ..core.cporm import Cporm
 
 DESCRIPTION = {
 
@@ -48,7 +46,7 @@ METHODS_INTERFACES = {
 	'GetDataValue': {
 		'type': {
 			'position': 0,
-			'type': ['str'],
+			'type': ['long'],
 			'essential': True,
 			'options': {
 				0 : "종목코드",
@@ -74,23 +72,12 @@ METHODS_INTERFACES = {
 }
 
 
-
 def get_stockmstm(code, fields=DESCRIPTION['default']):
 	if isinstance(code, (list, tuple, set)):
 		code = ''.join(code)
-	cp = win32com.client.Dispatch(MODULE_NAME)
-	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code)
-	cp = set_inputvalue(cp, setinputvalue_argset)
-	nrows_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
-	nrows = cp.GetHeaderValue(nrows_arg)
-
-	fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetDataValue', fields)
-	records = []
-	for r in range(nrows):
-		row = {}
-		for colnm in fields:
-			args = encode_args(METHODS_INTERFACES, 'GetDataValue', indexed=False, flated=True, type=colnm, index=r)
-			data = cp.GetDataValue(*args)
-			row[colnm] = data
-		records.append(row)
+	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+	crm.set_inputvalues(code=code)
+	crm.blockrequest()
+	ordered_fields = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
+	records = crm.get_datavalue_table(ordered_fields)
 	return records

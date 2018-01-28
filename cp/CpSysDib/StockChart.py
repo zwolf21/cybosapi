@@ -1,7 +1,4 @@
-import win32com.client
-
-from ..utils import *
-
+from ..core.cporm import Cporm
 
 DESCRIPTION = {
 	'com_type': 'Request/Reply',
@@ -215,36 +212,13 @@ METHODS_INTERFACES = {
 
 
 def get_stockchart(extras=None, **kwargs):
-	'''# r = get_stockchart(
-		code = 'A003540',
-		reqgb = '기간',
-		start_date = '20161020',
-		end_date = '20161031',
-		count = 10,
-		field = ['날짜', '시가', '*가', '거래량',],
-		chart = '일',
-		stockadj = '수정',
-		extras = ['code', '*한가']
-)
-	'''
-	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)
-	cp = win32com.client.Dispatch(MODULE_NAME)
-	cp = set_inputvalue(cp, setinputvalue_argset)
-	records =  output_to_records(METHODS_INTERFACES, cp, setinputvalue_argset)
+	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+	crm.set_inputvalues(**kwargs)
+	crm.blockrequest()
+	ordered_fields = crm.get_ordered_fields('SetInputValue', **kwargs)
+	records = crm.get_datavalue_table(ordered_fields)
 	if extras:
-		extras = expand_field_fnmatch(METHODS_INTERFACES, 'GetHeaderValue', extras)
-		ext = {}
-		for colnm in extras:
-			arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=colnm)
-			value = cp.GetHeaderValue(arg)
-			ext[colnm] = value
+		more = crm.get_headervalues(extras)
 		for row in records:
-			row.update(ext)
+			row.update(more)
 	return records
-
-
-
-
-
-
-

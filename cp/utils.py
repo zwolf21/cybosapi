@@ -199,26 +199,6 @@ def output_to_records(method_info, cp, argset):
 
 
 
-class InterfaceParser:
-
-	def __init__(self, interface):
-		records = self._flatten_interface(interface)		
-		self.lst = Listorm(records)
-
-	def _flatten_interface(self, interface, levelnames=['method', 'arg', 'prop', 'val', 'opt']):
-		def dictraversal(d, path=None):
-			path = path or []
-			visited = []
-			for key, val in d.items():
-				if isinstance(val, dict):
-					visited += dictraversal(val, path+[key])
-				else:
-					subpath = path + [key, val]
-					visited.append(subpath)
-			return visited
-		return [dict(zip_longest(levelnames, r)) for r in dictraversal(interface)]
-
-
 import sys
 from PyQt5.QtWidgets import *
 import win32com.client

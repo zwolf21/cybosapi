@@ -1,7 +1,4 @@
-import win32com.client
-
-from ..utils import *
-
+from ..core.cporm import Cporm
 
 
 DESCRIPTION = {
@@ -163,15 +160,9 @@ METHODS_INTERFACES = {
 }
 
 
-
 def get_stockmst(code, fields):
-	cp = win32com.client.Dispatch(MODULE_NAME)
-	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code)
-	cp = set_inputvalue(cp, setinputvalue_argset)
-	ext = {}
-	fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetHeaderValue', fields)
-	for colnm in fields:
-		arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=colnm)
-		value = cp.GetHeaderValue(arg)
-		ext[colnm] = value
+	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+	crm.set_inputvalues(code=code)
+	crm.blockrequest()
+	ext = crm.get_headervalues(fields)
 	return ext

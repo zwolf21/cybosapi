@@ -7,3 +7,52 @@ DESCRIPTION = {
  '''
 }
 
+MODULE_NAME = 'dscbo1.CpSvr8082'
+
+METHODS_INTERFACES = {
+
+	'SetInputValue': {
+		'code': {
+			'position': 0,
+			'type': ['str'],
+			'essential': True,
+		},
+		'recent_period': {
+			'position': 1,
+			'type': ['char'],
+			'essential': True,
+			'options': {
+				ord('1'): '20개의최근일수',
+				ord('2'): '60개의최근일수',
+				ord('3'): '120개의최근일수',
+			},
+		},
+	},
+	'GetHeaderValue': {
+		'type': {
+			'position': 0,
+			'type': ['long'],
+			'essential': True,
+			'options': {
+				0: 'rows',
+			},
+		}
+	},
+	'GetDataValue': {
+		'type': {
+			'position': 0,
+			'type': ['long'],
+			'essential': True,
+			'options': {
+				0: '일자',
+				1: '수치',
+				3: '전일대비',
+			},
+		},
+		'index': {
+			'position': 1,
+			'type': ['long'],
+			'essential': True,
+		},
+	},	
+}
