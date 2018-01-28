@@ -215,6 +215,18 @@ METHODS_INTERFACES = {
 
 
 def get_stockchart(extras=None, **kwargs):
+	'''# r = get_stockchart(
+		code = 'A003540',
+		reqgb = '기간',
+		start_date = '20161020',
+		end_date = '20161031',
+		count = 10,
+		field = ['날짜', '시가', '*가', '거래량',],
+		chart = '일',
+		stockadj = '수정',
+		extras = ['code', '*한가']
+)
+	'''
 	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)
 	cp = win32com.client.Dispatch(MODULE_NAME)
 	cp = set_inputvalue(cp, setinputvalue_argset)

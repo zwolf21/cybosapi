@@ -3,7 +3,9 @@ import win32com.client
 from ..utils import *
 
 DESCRIPTION = {
+
 	'summary': '복수 종목 조회 7059',
+
 	'point': '''
 		주식 복수 종목에 대해 간단한 내용을 일괄 조회 요청하고 수신
 	    Mst 모듈이  한종목의 다양한 정보라면, MstM은 복수종목의 간략정보
@@ -14,14 +16,11 @@ DESCRIPTION = {
 	MstM.SetInputValue(type,value)
 		0 - (string) 다수의 종목코드
 			ex) A003540A000060A000010 (MAX:110개)
+	''',
 
 	 'default': [
 		'종목코드', '종목명', '대비', '현재가', '매도호가','매수호가'
-	]
-
-
-
-	'''
+	],
 }
 
 
@@ -76,7 +75,7 @@ METHODS_INTERFACES = {
 
 
 
-def get_stockmstm(code, fields):
+def get_stockmstm(code, fields=DESCRIPTION['default']):
 	if isinstance(code, (list, tuple, set)):
 		code = ''.join(code)
 	cp = win32com.client.Dispatch(MODULE_NAME)

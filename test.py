@@ -1,3 +1,4 @@
+import pandas as pd
 from cp.CpSysDib.MarketEye import get_marketeye
 from cp.CpSysDib.StockChart import get_stockchart
 from cp.CpDib.StockMst import get_stockmst
@@ -9,9 +10,19 @@ from cp.CpDib.StockBid import get_stockbid
 from cp.CpDib.StockWeek import get_stockweek
 
 # r = get_marketeye(
-# 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS'], 
-# 	# contract='체결가비교*'
+# 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
+# 	contract='호가비교방식'
 # )
+
+# print(pd.DataFrame(r))
+
+# r = get_marketeye(
+# 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간'], 
+# 	contract='체결가비교방식'
+# )
+
+# print(pd.DataFrame(r))
+
 
 # for row in r:
 # 	print(row)
@@ -44,18 +55,24 @@ from cp.CpDib.StockWeek import get_stockweek
 
 # r = get_stockmstm(
 # 	code= ['A003540','A000060','A000010'],
-# 	fields = [
-# 		'종목코드', '종목명', '대비', '대비구분코드', '현재가', '매도호가', '매수호가', '거래량', '장구분플래그', '예상*'
-# 	]
+# 	# fields = [
+# 	# 	'종목코드', '종목명', '대비', '대비구분코드', '현재가', '매도호가', '매수호가', '거래량', '장구분플래그', '예상*'
+# 	# ]
 # )
 # for row in r:
 # 	print(row)
 
-# print('='*50)
-# r = get_stockcur(code='A000060')
-# print(r)
+print('='*50)
+r = get_stockcur(code='A003540')
+print(r)
 
 
+# import pythoncom
+# import time
+# while 1:
+# 	pythoncom.PumpWaitingMessages()
+# 	time.sleep(0.1)
+# 	print('wating...')
 # r = get_stockmst2(code=['A003045'], fields=['종목코드', '종목명', '시간'])
 
 # for row in r:
@@ -63,24 +80,25 @@ from cp.CpDib.StockWeek import get_stockweek
 
 # r = get_stockjpbid(
 # 	code='A000060',
-# 	fields = ['종목코드', '시간', '거래량', '총매도잔량', '*차매도*']
+# 	fields = ['종목코드', '시간', '거래량', '총매도잔량']
 # )
 
 # print(r)
 
-r = get_stockbid(
-	code = 'A000060',
-	extras = ['*'],
-	count = 10,
-	fields = ['*'],
-)
-for row in r:
-	print(row)
+# r = get_stockbid(
+# 	code = 'A000060',
+# 	extras = ['*'],
+# 	count = 10,
+# 	fields = ['*'],
+# )
+# for row in r:
+# 	print(row)
 
-r = get_stockweek(
-	code= 'A00060',
-	fields = ['*'],
-	extras=['날짜']
-)
-for row in r:
-	print(row)
+# r = get_stockweek(
+# 	code= 'A00060',
+# 	fields = ['*'],
+# 	extras=['날짜']
+# )
+# for row in r:
+# 	print(row)
+

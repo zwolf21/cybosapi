@@ -106,13 +106,45 @@ METHODS_INTERFACES = {
 	},	
 }
 
+
+class CpEvent:
+    def set_params(self, client):
+        self.client = client
+
+    def OnReceived(self):
+        code = self.client.GetHeaderValue(0)  # 종목코드
+        name = self.client.GetHeaderValue(1)  # 
+        timess = self.client.GetHeaderValue(18)  # 초
+        exFlag = self.client.GetHeaderValue(19)  # 예상체결 플래그
+        cprice = self.client.GetHeaderValue(13)  # 현재가
+        diff = self.client.GetHeaderValue(2)  # 대비
+        cVol = self.client.GetHeaderValue(17)  # 순간체결수량
+        vol = self.client.GetHeaderValue(9)  # 거래량
+
+        if (exFlag == ord('1')):  # 동시호가 시간 (예상체결)
+            print("실시간(예상체결)", name, timess, "*", cprice, "대비", diff, "체결량", cVol, "거래량", vol)
+        elif (exFlag == ord('2')):  # 장중(체결)
+            print("실시간(장중 체결)", name, timess, cprice, "대비", diff, "체결량", cVol, "거래량", vol)
+
+import time
+import pythoncom
 def get_stockcur(code, fields = DESCRIPTION.get('default')):
-	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code) 
+	setinputvalue_argset = encode_args(
+		METHODS_INTERFACES, 'SetInputValue', code=code
+	)
 	cp = win32com.client.Dispatch(MODULE_NAME)
-	cp.SetInputValue(0, code)
+	handler = win32com.client.WithEvents(cp, CpEvent)
+	handler.set_params(cp)
+	cp = set_inputvalue(cp, setinputvalue_argset, blockrequest=False)
+
+	while pythoncom.PumpWaitingMessages() == 0:
+		time.sleep(1)
+		print(dir(cp))
+		print('subscribing...')
 	ext = {}
 	for colnm in fields:
 		arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=colnm)
 		value = cp.GetHeaderValue(arg)
 		ext[colnm] = value
+	cp.Unsubscribe()
 	return ext
