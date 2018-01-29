@@ -1,6 +1,4 @@
-import win32com.client
-
-from ..utils import *
+from ..core.cporm import Cporm
 
 DESCRIPTION = {
 	'summary': '6개월, 1년 기간 종류별 증시 자금 동향 차트 데이터 7819 ',
@@ -50,13 +48,6 @@ MODULE_NAME = 'dscbo1.CpSvr7819C'
 METHODS_INTERFACES = {
 
 	'SetInputValue': {
-		# 'type': {
-		# 	'position': 0,
-		# 	'type': ['char'],
-		# 	'essential': True,
-		# 	'options': {
-		# 	}
-		# },
 		'kind': {
 			'position': 0,
 			'type': ['char'],
@@ -88,7 +79,7 @@ METHODS_INTERFACES = {
 			'type': ['long'],
 			'essential': True,
 			'options': {
-				0: 'rows',
+				0: 'count',
 			},
 		}
 	},
@@ -110,6 +101,18 @@ METHODS_INTERFACES = {
 		},
 	},	
 }
+
+def get_stockmst(code, fields):
+	ext = crm.get_headervalues(fields)
+	return ext
+
+def get_cpsvr7819c(fields, **kwargs):
+	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+	crm.set_inputvalues(**kwargs)
+	crm.blockrequest()
+	orderd_field = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
+	records = crm.get_datavalue_table(orderd_field)
+	return records
 
 def get_svr7819c(type=['일자', '수치', '전일대비'], **kwargs):
 	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)

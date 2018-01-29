@@ -1,6 +1,5 @@
-import win32com.client
+from ..core.cporm import Cporm
 
-from ..utils import *
 
 DESCRIPTION = {
 	'summary': '최장 10년 과거데이터 7026',
@@ -65,7 +64,7 @@ METHODS_INTERFACES = {
             'essential': True,
             'options': {
                 0: '종목코드',
-                1: 'rows',
+                1: 'count',
                 2: '날짜',
             },
         },
@@ -106,31 +105,14 @@ METHODS_INTERFACES = {
     },  
 }
 
-def get_stockweek(extras, fields=None,**kwargs):
-    setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)
-    cp = win32com.client.Dispatch(MODULE_NAME)
-    cp = set_inputvalue(cp, setinputvalue_argset)
-
-    extras = expand_field_fnmatch(METHODS_INTERFACES, 'GetHeaderValue', extras)
-    fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetDataValue', fields)
-
-    headerset = {}
-    for h in extras:
-        harg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=h)
-        headerset[h] = cp.GetHeaderValue(harg)
-
-    nrow_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
-    nrows = cp.GetHeaderValue(nrow_arg) 
-
-    records = []
-    for r in range(nrows):
-        row = {}
-        for f in fields:
-            farg = encode_args(
-                METHODS_INTERFACES, 'GetDataValue', indexed=False, type=f, index=r
-            )
-            value = cp.GetDataValue(*farg)
-            row[f] = value
-        row.update(headerset)
-        records.append(row)
+def get_stockweek(fields, extras=None, **kwargs):
+    extras = extras or None
+    crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+    crm.set_inputvalues(**kwargs)
+    crm.blockrequest()
+    ext = crm.get_headervalues(extras)
+    ordered_fields = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
+    records = crm.get_datavalue_table(ordered_fields)
+    for row in records:
+        row.update(ext)
     return records

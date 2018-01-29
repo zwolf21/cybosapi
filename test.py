@@ -5,10 +5,11 @@ from cp.CpDib.StockMst import get_stockmst
 from cp.CpDib.StockMstM import get_stockmstm
 from cp.CpDib.StockMst2 import get_stockmst2
 from cp.CpDib.StockCur import get_stockcur
-from cp.CpDib.StockJpBid2 import get_stockjpbid
+from cp.CpDib.StockJpBid import get_stockjpbid
 from cp.CpDib.StockBid import get_stockbid
 from cp.CpDib.StockWeek import get_stockweek
-from cp.CpDib.CpSvr7819C import get_svr7819c
+from cp.CpDib.CpSvr7819C import get_cpsvr7819c
+from cp.CpDib.StockIndexIR import get_stockindexir
 
 # r = get_marketeye(
 # 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
@@ -78,7 +79,7 @@ from cp.CpDib.CpSvr7819C import get_svr7819c
 # for row in r:
 # 	print(row)
 
-# r = get_stockjpbid(
+# r = get_stockjpbid2(
 # 	code='A000060',
 # 	fields = ['종목코드', '시간', '거래량', '총매도잔량']
 # )
@@ -87,7 +88,7 @@ from cp.CpDib.CpSvr7819C import get_svr7819c
 
 # r = get_stockbid(
 # 	code = 'A000060',
-# 	extras = ['*'],
+# 	types = ['*'],
 # 	count = 10,
 # 	fields = ['*'],
 # )
@@ -97,11 +98,16 @@ from cp.CpDib.CpSvr7819C import get_svr7819c
 # r = get_stockweek(
 # 	code= 'A00060',
 # 	fields = ['*'],
-# 	extras=['날짜']
+# 	extras=['날짜','*']
 # )
 # for row in r:
 # 	print(row)
 
-# r = get_svr7819c(kind='미수금잔고', period='1년')
+# 안됨
+# r = get_cpsvr7819c(kind='미수금잔고', period='1년', fields=['*'])
 # for row in r:
 # 	print(row)
+
+r = get_stockindexir(fields=['*'], jcode='U005')
+for row in r:
+	print(row)

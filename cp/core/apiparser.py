@@ -81,7 +81,8 @@ class InterfaceParser:
 			return lst.first.val
 
 	def get_headervalue_nrow_arg(self):
-		lst = self.lst.filterand(method='GetHeaderValue', arg='type', prop='options', opt='rows')
+		lst = self.lst.filterand(method='GetHeaderValue', arg='type', prop='options')
+		lst = lst.filter(where=lambda row: row.opt in ['rows', 'count', '수신개수'])
 		if  lst.exists:
 			return lst.first.val
 			# raise ValueError("It needs 'rows' property in GetHeaderValue options")
@@ -108,7 +109,7 @@ class InterfaceParser:
 			
 	def decode_arg_options(self, method, option='type', args=None):
 		args = args or []
-		if isinstance(args, str):
+		if isinstance(args, (str, int, bytes)):
 			args = [args]
 
 		m = self._get_option_fields(method, option)

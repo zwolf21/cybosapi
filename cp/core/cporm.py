@@ -25,6 +25,9 @@ class Cporm:
 		args = self.ip.encode_field_options('GetHeaderValue', option='type', fields=fields, indexing=False)
 		fields = self.ip.decode_arg_options('GetHeaderValue', option='type', args=args)
 		ext = {}
+		if isinstance(args, (int, str, bytes)):
+			args = [args]
+
 		for arg, f in zip(args, fields):
 			ext[f] = self.cp.GetHeaderValue(arg)
 		return ext
@@ -47,6 +50,8 @@ class Cporm:
 			coliter = self.ip.encode_field_options('GetDataValue',
 				option='type', fields=ordered_fields, indexing=False
 			)
+			if isinstance(coliter, (str, int, bytes)):
+				coliter = [coliter]
 		else:
 			coliter = range(ncols)
 		for r in range(nrows):

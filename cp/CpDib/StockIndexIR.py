@@ -1,3 +1,4 @@
+from ..core.cporm import Cporm
 
 DESCRIPTION = {
 	'summary': '업종 코드에 관한 데이터(지수,업종명,거래량,거래 대금)을 1분 간격',
@@ -33,10 +34,62 @@ value = StockIndexIR.GetDataValue (Type,index)
 
 'default': [
 		'업종명', '지수', '전일대비', '거래량', '거래대금'
-	]
-
-    
-	
+	]	
 }
 
 
+
+MODULE_NAME = 'dscbo1.StockIndexIR'
+
+METHODS_INTERFACES = {
+
+	'SetInputValue': {
+		'ucode': {
+			'position': 0,
+			'type': ['str'],
+			'essential': True,
+		},
+	},
+	'GetHeaderValue': {
+		'type': {
+			'position': 0,
+			'type': ['long'],
+			'essential': True,
+			'options': {
+				1: '수신개수',
+				2: '업종코드',
+			}
+		}
+	},
+	'GetDataValue': {
+		'type': {
+			'position': 0,
+			'type': ['long'],
+			'essential': True,
+			'options': {
+				0: '시간',
+				1: '지수',
+				2: '전일대비',
+				3: '거래량',
+				4: '거래대금',
+			},
+		},
+		'index': {
+			'position': 1,
+			'type': ['long'],
+			'essential': True,
+		},
+	},	
+}
+
+def get_stockindexir(fields, extras=None, **kwargs):
+	extras = extras or ['업종코드']
+	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+	crm.set_inputvalues(**kwargs)
+	crm.blockrequest()
+	headers = crm.get_headervalues(extras)
+	ordered_fields = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
+	records = crm.get_datavalue_table(ordered_fields)
+	for row in records:
+		row.update(headers)
+	return records

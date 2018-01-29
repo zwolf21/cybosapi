@@ -1,6 +1,4 @@
-import win32com.client
-
-from ..utils import *
+from ..core.cporm import Cporm
 
 DESCRIPTION = {
 	'summary': '호가 잔량 7024',
@@ -61,7 +59,7 @@ METHODS_INTERFACES = {
             'essential': True,
             'options': {
                 0: '종목코드',
-                2: 'rows',
+                2: 'count',
                 3: '누적매도체결량',
                 4: '누적매수체결량',
                 5: '체결비교방식',
@@ -95,31 +93,13 @@ METHODS_INTERFACES = {
     },  
 }
 
-def get_stockbid(extras, fields=None,**kwargs):
-    setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', **kwargs)
-    cp = win32com.client.Dispatch(MODULE_NAME)
-    cp = set_inputvalue(cp, setinputvalue_argset)
-
-    extras = expand_field_fnmatch(METHODS_INTERFACES, 'GetHeaderValue', extras)
-    fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetDataValue', fields)
-
-    headerset = {}
-    for h in extras:
-        harg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type=h)
-        headerset[h] = cp.GetHeaderValue(harg)
-
-    nrow_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
-    nrows = cp.GetHeaderValue(nrow_arg) 
-
-    records = []
-    for r in range(nrows):
-        row = {}
-        for f in fields:
-            farg = encode_args(
-                METHODS_INTERFACES, 'GetDataValue', indexed=False, type=f, index=r
-            )
-            value = cp.GetDataValue(*farg)
-            row[f] = value
+def get_stockbid(fields, types, **kwargs):
+    crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+    crm.set_inputvalues(**kwargs)
+    crm.blockrequest()
+    headerset = crm.get_headervalues(types)
+    orderd_field = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
+    records = crm.get_datavalue_table(orderd_field)
+    for row in records:
         row.update(headerset)
-        records.append(row)
     return records
