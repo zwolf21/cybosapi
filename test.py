@@ -10,6 +10,7 @@ from cp.CpDib.StockBid import get_stockbid
 from cp.CpDib.StockWeek import get_stockweek
 from cp.CpDib.CpSvr7819C import get_cpsvr7819c
 from cp.CpDib.StockIndexIR import get_stockindexir
+from cp.CpUtil.CpCodeMgr import *
 
 # r = get_marketeye(
 # 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
@@ -108,6 +109,35 @@ from cp.CpDib.StockIndexIR import get_stockindexir
 # for row in r:
 # 	print(row)
 
-r = get_stockindexir(fields=['*'], jcode='U005')
-for row in r:
-	print(row)
+# r = get_stockindexir(fields=['*'], jcode='U005')
+# for row in r:
+# 	print(row)
+
+# r = get_stocklist_by_market(type='코스닥')
+# print(r)
+
+# r = get_codemap(type='거래소')
+# print(r)
+
+cpm = CpCodeManager('Q590001')
+print(cpm.name)
+print(cpm.industry_name)
+print(cpm.stock_market_kind)
+print(cpm.stock_control_kind)
+print(cpm.stock_kospi200_kind)
+print(cpm.stock_section_kind)
+print(cpm.market_start_time)
+print(cpm.market_end_time)
+print(cpm.stock_meme_min)
+print(cpm.stock_industry_code)
+print(cpm.stock_capital)
+print(cpm.stock_group_code)
+print(cpm.stock_lac_kind)
+print(cpm.stock_listed_date)
+print(cpm.is_stock_credit_enable)
+print(cpm.stock_parprice_change_type)
+
+r = get_stock_elw_basket_comp_list('Q590001')
+print(r)
+
+
