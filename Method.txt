@@ -22,10 +22,10 @@ CpDib.CpSvr8561T	#테마 종목 조회 데이터 8561 x 8563으로 테마효용�
 CpDib.CpSvr8562	# 종목별 테마 조회 데이터 8562 x 종목코드 입력시 어느테마인지 알려줌
 CpDib.CpSvr8563	# 상승율 구분을 두어 테마 데이터 조회 8563
 
-CpSysDib.StockUniCur	# 주식/업종 시세데이터 7321
+CpSysDib.StockUniCur	# 주식/업종 시세데이터 7321 x 시간외 단일가 정보임
 CpSysDib.StockChart	# 주식 업종 차트데이터 수신 7400
-CpSysDib.CpMarketWatch	# 특정주식 전종목 특징주 포착 8092
-CpSysDib.CpMarketWatchS	#  특정주식 전종목 특징주 포착 8092
+CpSysDib.CpMarketWatch	# 특정주식 전종목 특징주 포착 8092 Request/Reply방식
+CpSysDib.CpMarketWatchS	#  특정주식 전종목 특징주 포착 8092 watch와 동일 Subscribe/publish방식
 CpSysDib.MarketEye	# 주식 지수 등의 여러 종목의 필요 항목 한번에 수신 7059
 CpSysDib.WorldCur	# 해외지수 및 환율을 요청 수신 8300
 CpSysDib.CpSvr3744	# 입력한 종목들의 지수를 산출 3744
