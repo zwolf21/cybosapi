@@ -85,13 +85,12 @@ class InterfaceParser:
 		lst = lst.filter(where=lambda row: row.opt in ['rows', 'count', '수신개수'])
 		if  lst.exists:
 			return lst.first.val
-			# raise ValueError("It needs 'rows' property in GetHeaderValue options")
 
 	def get_headervalue_ncolumn_arg(self):
-		lst = self.lst.filterand(method='GetHeaderValue', arg='type', prop='options', opt='columns')
+		lst = self.lst.filterand(method='GetHeaderValue', arg='type', prop='options')
+		lst = lst.filter(where=lambda row: row.opt in ['columns', '수신항목구분목록'])
 		if lst.exists:
 			return lst.first.val
-			# raise ValueError("It needs 'columns' property in GetHeaderValue options")
 
 	def encode_field_options(self, method, option='type', fields=None, indexing=False):
 		fields_mapping = self._get_option_fields(method, option)
@@ -123,7 +122,6 @@ class InterfaceParser:
 			f = rev[a]
 			if f not in fields:
 				fields.append(f)
-
 		return fields
 
 	def gen_args(self, method, setposition=True, **kwargs):

@@ -1,3 +1,4 @@
+import win32com.client
 
 DESCRIPTION = {
 	'summary': '해외종목 코드 조회',
@@ -14,3 +15,30 @@ DESCRIPTION = {
    
 }
 
+MODULE_NAME = 'CpUtil.CpUsCode'
+
+def get_us_code_list(type):
+	interface = {
+		'전종목': 1,
+		'국가대표': 2,
+		'업종': 3,
+		'종목': 4,
+		'예탁증서': 5,
+		'상품선물': 6,
+		'환율': 7,
+		
+	}
+	if type not in interface.values():
+		type = interface.get(type)
+
+	cp = win32com.client.Dispatch(MODULE_NAME)
+	return cp.GetUsCodeList(type)
+
+def uscode2name(uscode):
+	if isinstance(uscode, str):
+		uscode = [uscode]
+	cp = win32com.client.Dispatch(MODULE_NAME)
+	pair = {}
+	for cd in uscode:
+		pair[cd] = cp.GetNameByUsCode(cd)
+	return pair

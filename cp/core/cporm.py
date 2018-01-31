@@ -40,7 +40,10 @@ class Cporm:
 	def get_columns_count(self):
 		arg = self.ip.get_headervalue_ncolumn_arg()
 		if arg is not None:
-			return self.cp.GetHeaderValue(arg)
+			if isinstance(arg, int):
+				return self.cp.GetHeaderValue(arg)
+			elif isinstance(arg, str):
+				return arg.split(',')
 
 	def get_datavalue_table(self, ordered_fields):
 		nrows = self.get_rows_count()
@@ -53,7 +56,11 @@ class Cporm:
 			if isinstance(coliter, (str, int, bytes)):
 				coliter = [coliter]
 		else:
-			coliter = range(ncols)
+			if isinstance(ncols, int):
+				coliter = range(ncols)
+			else:
+				coliter = list(map(str.strip, ncols.split(',')))
+
 		for r in range(nrows):
 			values = []
 			for c in coliter:

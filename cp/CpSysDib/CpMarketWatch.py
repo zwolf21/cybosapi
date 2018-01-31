@@ -1,4 +1,4 @@
-
+from ..core.cporm import Cporm
 
 DESCRIPTION = {
 	'summary': '특정 주식 종목이나 주식 전 종목에 대한 특징주 포착 데이터 8092',
@@ -56,3 +56,118 @@ value = CpMarketWatch.GetDataValue (Type,index)
 	
 }
 
+MODULE_NAME = 'CpSysDib.CpMarketWatch'
+
+METHODS_INTERFACES = {
+
+	'SetInputValue': {
+		'code': {
+			'position': 0,
+			'type': ['str[]', 'str'],
+			'essential': True,
+		},
+		'field': {
+			'position': 1,
+			'type': ['str'],
+			'essential': True,
+			'options': 	{
+				"*": "모든항목",
+				"1" : "종목뉴스",
+				"2" : "공시정보",
+				"10": "외국계증권사창구첫매수",
+				"11": "외국계증권사창구첫매도",
+				"12": "외국인순매수",
+				"13": "외국인순매도",
+				"21": "전일거래량갱신",
+				"22": "최근5일거래량최고갱신",
+				"23": "최근5일매물대돌파",
+				"24": "최근60일매물대돌파",
+				"28": "최근5일첫상한가",
+				"29": "최근5일신고가갱신",
+				"30": "최근5일신저가갱신",
+				"31": "상한가직전",
+				"32": "하한가직전",
+				"41": "주가5MA상향돌파",
+				"42": "주가5MA하향돌파",
+				"43": "거래량5MA상향돌파",
+				"44": "주가데드크로스(5MA<20MA)",
+				"45": "주가골든크로스(5MA>20MA)",
+				"46": "MACD매수-Signal(9)상향돌파",
+				"47": "MACD매도-Signal(9)하향돌파",
+				"48": "CCI매수-기준선(-100)상향돌파",
+				"49": "CCI매도-기준선(100)하향돌파",
+				"50": "Stochastic(10,5,5)매수-기준선상향돌파",
+				"51": "Stochastic(10,5,5)매도-기준선하향돌파",
+				"52": "Stochastic(10,5,5)매수-%K%D교차",
+				"53": "Stochastic(10,5,5)매도-%K%D교차",
+				"54": "Sonar매수-Signal(9)상향돌파",
+				"55": "Sonar매도-Signal(9)하향돌파",
+				"56": "Momentum매수-기준선(100)상향돌파",
+				"57": "Momentum매도-기준선(100)하향돌파",
+				"58": "RSI(14)매수-Signal(9)상향돌파",
+				"59": "RSI(14)매도-Signal(9)하향돌파",
+				"60": "VolumeOscillator매수-Signal(9)상향돌파",
+				"61": "VolumeOscillator매도-Signal(9)하향돌파",
+				"62": "Priceroc매수-Signal(9)상향돌파",
+				"63": "Priceroc매도-Signal(9)하향돌파",
+				"64": "일목균형표매수-전환선>기준선상향교차",
+				"65": "일목균형표매도-전환선<기준선하향교차",
+				"66": "일목균형표매수-주가가선행스팬상향돌파",
+				"67": "일목균형표매도-주가가선행스팬하향돌파",
+				"68": "삼선전환도-양전환",
+				"69": "삼선전환도-음전환",
+				"70": "캔들패턴-상승반전형",
+				"71": "캔들패턴-하락반전형",
+				"81": "단기급락후5MA상향돌파",
+				"82": "주가이동평균밀집-5%이내",
+				"83": "눌림목재상승-20MA지지",
+			},
+			'default': "*"
+		},
+		'start_time': {
+			'position': 2,
+			'type': ['long'],
+			'essential': False,
+			'options': {
+				0: '처음부터',
+			},
+			'default': 0,
+		},
+	},
+	'GetHeaderValue': {
+		'type': {
+			'position': 0,
+			'type': ['long'],
+			'essential': True,
+			'options': {
+				0: '수신항목구분목록',
+				1: '시작시간',
+				2: '수신개수',
+			}
+		},
+	},
+	'GetDataValue': {
+		'type': {
+			'position': 0,
+			'type': ['long'],
+			'essential': True,
+		},
+		'index': {
+			'position': 1,
+			'type': ['long'],
+			'essential': True,
+		},
+	},	
+}
+
+def get_stockmarket_watch(**kwargs):
+	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+	args = crm.ip.gen_args('SetInputValue', **kwargs)
+	for pos, arg in args:
+		if pos == 1:
+			arg = ','.join(arg)
+		crm.cp.SetInputValue(pos, arg)
+	crm.cp.blockrequest()
+	ordered_fields = crm.get_ordered_fields('SetInputValue', **kwargs)
+	records = crm.get_datavalue_table(ordered_fields)
+	return records

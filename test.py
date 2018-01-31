@@ -11,39 +11,42 @@ from cp.CpDib.StockWeek import get_stockweek
 from cp.CpDib.CpSvr7819C import get_cpsvr7819c
 from cp.CpDib.StockIndexIR import get_stockindexir
 from cp.CpUtil.CpCodeMgr import *
+from cp.CpUtil.CpUsCode import *
+from cp.CpUtil.CpStockCode import *
+from cp.CpSysDib.CpMarketWatch import get_stockmarket_watch
 
-# r = get_marketeye(
-# 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
-# 	contract='호가비교방식'
-# )
+r = get_marketeye(
+	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
+	contract='호가비교방식'
+)
 
-# print(pd.DataFrame(r))
+print(pd.DataFrame(r))
 
-# r = get_marketeye(
-# 	code='A003540', field=['현재가', 'PER', 'EPS', '최근분기년*'], 
-# 	contract='체결가비교방식'
-# )
+r = get_marketeye(
+	code='A003540', field=['현재가', 'PER', 'EPS', '최근분기년*'], 
+	contract='체결가비교방식'
+)
 
-# print(pd.DataFrame(r))
+print(pd.DataFrame(r))
 
 
 # for row in r:
 # 	print(row)
 
 
-# r = get_stockchart(
-# 	code = 'A003540',
-# 	reqgb = '기간',
-# 	start_date = '20161020',
-# 	end_date = '20161031',
-# 	count = 10,
-# 	field = ['날짜', '시가', '*가', '거래량',],
-# 	chart = '일',
-# 	stockadj = '수정',
-# 	extras = ['code', '*한가']
-# )
-# for row in r:
-# 	print(row)
+r = get_stockchart(
+	code = 'A003540',
+	reqgb = '기간',
+	start_date = '20161020',
+	end_date = '20161031',
+	count = 10,
+	field = ['날짜', '시가', '*가', '거래량',],
+	chart = '일',
+	stockadj = '수정',
+	extras = ['code', '*한가']
+)
+
+print(pd.DataFrame(r))
 
 
 # r = get_stockmst(
@@ -119,25 +122,41 @@ from cp.CpUtil.CpCodeMgr import *
 # r = get_codemap(type='거래소')
 # print(r)
 
-cpm = CpCodeManager('Q590001')
-print(cpm.name)
-print(cpm.industry_name)
-print(cpm.stock_market_kind)
-print(cpm.stock_control_kind)
-print(cpm.stock_kospi200_kind)
-print(cpm.stock_section_kind)
-print(cpm.market_start_time)
-print(cpm.market_end_time)
-print(cpm.stock_meme_min)
-print(cpm.stock_industry_code)
-print(cpm.stock_capital)
-print(cpm.stock_group_code)
-print(cpm.stock_lac_kind)
-print(cpm.stock_listed_date)
-print(cpm.is_stock_credit_enable)
-print(cpm.stock_parprice_change_type)
+# cpm = CpCodeManager('Q590001')
+# print(cpm.name)
+# print(cpm.industry_name)
+# print(cpm.stock_market_kind)
+# print(cpm.stock_control_kind)
+# print(cpm.stock_kospi200_kind)
+# print(cpm.stock_section_kind)
+# print(cpm.market_start_time)
+# print(cpm.market_end_time)
+# print(cpm.stock_meme_min)
+# print(cpm.stock_industry_code)
+# print(cpm.stock_capital)
+# print(cpm.stock_group_code)
+# print(cpm.stock_lac_kind)
+# print(cpm.stock_listed_date)
+# print(cpm.is_stock_credit_enable)
+# print(cpm.stock_parprice_change_type)
 
-r = get_stock_elw_basket_comp_list('Q590001')
-print(r)
+# r = get_stock_elw_basket_comp_list('Q590001')
+# print(r)
 
+
+# r = get_us_code_list('전종목')
+# print(r)
+
+# r = uscode2name(r)
+# print(r)
+
+# ctk = CpStockCode('Q590001')
+# print(ctk.code2name())
+# print(ctk.code2index())
+# print(get_count())
+
+# print(get_code_table())
+r = get_stockmarket_watch(code='*', field=['종목뉴스', '공시정보'])
+for row in r:
+	print(row)
 
