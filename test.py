@@ -14,39 +14,40 @@ from cp.CpUtil.CpCodeMgr import *
 from cp.CpUtil.CpUsCode import *
 from cp.CpUtil.CpStockCode import *
 from cp.CpSysDib.CpMarketWatch import get_stockmarket_watch
+from cp.CpDib.CpSvr8300 import get_cpsvr8300
 
-r = get_marketeye(
-	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
-	contract='호가비교방식'
-)
+# r = get_marketeye(
+# 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
+# 	contract='호가비교방식'
+# )
 
-print(pd.DataFrame(r))
+# print(pd.DataFrame(r))
 
-r = get_marketeye(
-	code='A003540', field=['현재가', 'PER', 'EPS', '최근분기년*'], 
-	contract='체결가비교방식'
-)
+# r = get_marketeye(
+# 	code='A003540', field=['현재가', 'PER', 'EPS', '최근분기년*'], 
+# 	contract='체결가비교방식'
+# )
 
-print(pd.DataFrame(r))
+# print(pd.DataFrame(r))
 
 
 # for row in r:
 # 	print(row)
 
 
-r = get_stockchart(
-	code = 'A003540',
-	reqgb = '기간',
-	start_date = '20161020',
-	end_date = '20161031',
-	count = 10,
-	field = ['날짜', '시가', '*가', '거래량',],
-	chart = '일',
-	stockadj = '수정',
-	extras = ['code', '*한가']
-)
+# r = get_stockchart(
+# 	code = 'A003540',
+# 	reqgb = '기간',
+# 	start_date = '20161020',
+# 	end_date = '20161031',
+# 	count = 10,
+# 	field = ['날짜', '시가', '*가', '거래량',],
+# 	chart = '일',
+# 	stockadj = '수정',
+# 	extras = ['code', '*한가']
+# )
 
-print(pd.DataFrame(r))
+# print(pd.DataFrame(r))
 
 
 # r = get_stockmst(
@@ -156,7 +157,10 @@ print(pd.DataFrame(r))
 # print(get_count())
 
 # print(get_code_table())
-r = get_stockmarket_watch(code='*', field=['종목뉴스', '공시정보'])
-for row in r:
-	print(row)
+# r = get_stockmarket_watch(code='*', field=['종목뉴스', '공시정보'])
+# for row in r:
+# 	print(row)
 
+r = get_cpsvr8300(code='BHI', fields=['*'], period='주', count=10)
+df = pd.DataFrame(r)
+print(df)

@@ -1,3 +1,4 @@
+from ..core.cporm import Cporm
 
 DESCRIPTION = {
 	'summary': '해외지수코드에 대한 과거 데이터 8300',
@@ -47,4 +48,77 @@ DESCRIPTION = {
 }
 
 
+MODULE_NAME = 'dscbo1.CpSvr8300'
+
+
+METHODS_INTERFACES = {
+
+    'SetInputValue': {
+        'code': {
+            'position': 0,
+            'type': ['str'],
+            'essential': True,
+        },
+        'period': {
+            'position': 1,
+            'type': ['char'],
+            'essential': True,
+            'options': {
+            	ord('D'): '일',
+            	ord('W'): '주',
+            	ord('M'): '월',
+            },
+        },
+        'count': {
+            'position': 3,
+            'type': ['long'],
+            'essential': False,
+        },
+        
+    },
+    'GetHeaderValue': {
+        'type': {
+            'position': 0,
+            'type': ['long'],
+            'essential': True,
+            'options': {
+                0: '해외지수코드',
+                1: '일주월구분 ',
+                2: '최근일',
+                3: '수신데이터수',
+            },
+        },
+    },
+    'GetDataValue': {
+        'type': {
+            'position': 0,
+            'type': ['long'],
+            'essential': True,
+            'options': {
+                0: '날짜',
+                1: '시가',
+                2: '고가',
+                3: '저가',
+                4: '종가',
+                5: '거래량',
+            },
+        },
+        'index': {
+            'position': 1,
+            'type': ['long'],
+            'essential': True,
+        },
+    },  
+}
+
+def get_cpsvr8300(fields, **kwargs):
+	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+	crm.set_inputvalues(**kwargs)
+	crm.blockrequest()
+	addon = crm.get_headervalues(['최근일', '해외지수코드'])
+	ordered_fields = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
+	records = crm.get_datavalue_table(ordered_fields)
+	for row in records:
+		row.update(addon)
+	return records
 

@@ -82,7 +82,7 @@ class InterfaceParser:
 
 	def get_headervalue_nrow_arg(self):
 		lst = self.lst.filterand(method='GetHeaderValue', arg='type', prop='options')
-		lst = lst.filter(where=lambda row: row.opt in ['rows', 'count', '수신개수'])
+		lst = lst.filter(where=lambda row: row.opt in ['rows', 'count', '수신개수', '수신데이터수'])
 		if  lst.exists:
 			return lst.first.val
 
