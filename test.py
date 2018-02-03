@@ -10,11 +10,14 @@ from cp.CpDib.StockBid import get_stockbid
 from cp.CpDib.StockWeek import get_stockweek
 from cp.CpDib.CpSvr7819C import get_cpsvr7819c
 from cp.CpDib.StockIndexIR import get_stockindexir
-from cp.CpUtil.CpCodeMgr import *
-from cp.CpUtil.CpUsCode import *
-from cp.CpUtil.CpStockCode import *
+from cp.CpUtil.CpCodeMgr import CpCodeManager, get_stocklist_by_market
+from cp.CpUtil.CpUsCode import get_us_code_list, uscode2name
+from cp.CpUtil.CpStockCode import CpStockCode, get_code_table, get_count
 from cp.CpSysDib.CpMarketWatch import get_stockmarket_watch
 from cp.CpDib.CpSvr8300 import get_cpsvr8300
+from cp.CpDib.CpSvr8561 import get_cpsvr8561 #테마 리스트
+from cp.CpDib.CpSvr8562 import get_cpsvr8562 #테마코드 종목별 매핑
+from cp.CpDib.CpSvr8561T import get_cpsvr8561t #테마코드별 종목 조회
 
 # r = get_marketeye(
 # 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
@@ -113,7 +116,8 @@ from cp.CpDib.CpSvr8300 import get_cpsvr8300
 # for row in r:
 # 	print(row)
 
-# r = get_stockindexir(fields=['*'], jcode='U005')
+# r = get_stockindexir(fields=['*'], ucode='U005')
+
 # for row in r:
 # 	print(row)
 
@@ -123,7 +127,7 @@ from cp.CpDib.CpSvr8300 import get_cpsvr8300
 # r = get_codemap(type='거래소')
 # print(r)
 
-# cpm = CpCodeManager('Q590001')
+# cpm = CpCodeManager('A011070')
 # print(cpm.name)
 # print(cpm.industry_name)
 # print(cpm.stock_market_kind)
@@ -161,6 +165,25 @@ from cp.CpDib.CpSvr8300 import get_cpsvr8300
 # for row in r:
 # 	print(row)
 
-r = get_cpsvr8300(code='BHI', fields=['*'], period='주', count=10)
-df = pd.DataFrame(r)
-print(df)
+# r = get_cpsvr8300(code='BHI', fields=['*'], period='월', count=5)
+# df = pd.DataFrame(r)
+# print(df)
+
+
+
+# r = get_stockindexir(ucode='006', fields=['*'])
+# for row in r:
+# 	print(row)
+
+# r = get_cpsvr8561()
+# for row in r:
+# 	print(row)
+
+# r = get_cpsvr8561t(tcode=346)
+# for row in r:
+# 	print(row)
+
+
+r = get_stocklist_by_market(type='거래소'
+)
+print(r)

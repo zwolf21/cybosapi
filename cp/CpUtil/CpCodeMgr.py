@@ -49,6 +49,7 @@ METHOD_INTERFACE = {
                 3: '프리보드',
                 4: 'KRX',
             },
+            'default': 1,
         },
     },
     'CodeToName': {
@@ -108,7 +109,9 @@ class CpCodeManager:
     def industry_name(self):
         '''증권전산업종코드에 해당하는 증권전산업종명을 반환한다
         '''
-        return self.crm.cp.GetIndustryName(self.code)
+        ucode = self.crm.cp.GetStockIndustryCode(self.code)
+        if ucode:
+            return self.crm.cp.GetIndustryName(ucode)
 
     @property
     def stock_margin_rate(self):
@@ -255,6 +258,8 @@ class CpCodeManager:
 
     @property
     def stock_section_kind(self):
+        '''code 에 해당하는 부 구분 코드를 반환한다.
+        '''
         retmap = {
             0: "구분없음",
             1: "주권",

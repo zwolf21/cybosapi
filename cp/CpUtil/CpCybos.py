@@ -47,3 +47,5 @@ def get_limit_remain_count(limit_type=2):
 	'''
 	cp = win32com.client.Dispatch(MODULE_NAME)
 	return cp.GetLimitRemainCount(limit_type)
+
+print(get_limit_request_remain_time())
