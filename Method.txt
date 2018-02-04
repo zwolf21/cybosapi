@@ -9,7 +9,7 @@ CpDib.StockIndexIR	# 업종코드 관련데이터 7035
 CpDib.StockIndexIChart	# 업종코드 관련데이터 7036 x
 CpDib.StockIndexIS	# 업종코드 관련데이터 7036 x
 CpDib.CpSvr7819	# 증시자금 데이터 7819 x
-CpDib.CpSvr7819C	# 6년, 1년 종류별 증시 자금 데이터 7819
+CpDib.CpSvr7819C	# 6년, 1년 종류별 증시 자금 데이터 7819                           
 CpDib.CpSvr8081	# 종류별 체결강도 8081
 CpDib.CpSvr8082	# 종목 업종별 체결강도 8082
 CpDib.CpSvr8083	# 종목 시간대별 체결강도 8083
@@ -32,13 +32,15 @@ CpSysDib.WorldCur	# 해외지수 및 환율을 요청 수신 8300 X
                           Subscribe/Publish방식만 다를 뿐,    CpSvr8300 데이터로 충분함.
 
 CpSysDib.CpSvr3744	# 입력한 종목들의 지수를 산출 3744 
-CpSysDib.CpSvrNew7215A	# 투자자별 순매도 순매수 순위
+CpSysDib.CpSvrNew7215A	# 투자자별 순매도 순매수 순위 x 비교기준이 없는 단순순위 
 CpSysDib.CpSvrNew7215B	# 기관계에 대한 최근일 또는 조회기간 따라 순매수 순매도
-CpSysDib.CpSvrNew7216	# 선택종목의 일자별 기관매매 추이 7216
+                          x단순순위이며 기관세분화도 되어있지 않음
+CpSysDib.CpSvrNew7216	# 선택종목의 일자별 기관매매 추이 7216 기관계/외인계 추이 
 CpSysDib.CpSvrNew7221	# 선택종목의 일자별 기관매매 추이 7221 x 선물옵션등의 주체별 시장동향
-CpSysDib.CpSvr7254	# 투자자들의 일일 매매동향 7254
-CpSysDib.CpSvr8548	# 종목들의 시세와 시가총액, 비중, 외인비중, 영향력,기여도 8548
-CpSysDib.StockOpenSb	# 주식의 장운영정보 
+CpSysDib.CpSvr7254	# 투자자들의 일일 매매동향 7254 외인과 기관별 세분화 
+CpSysDib.CpSvr8548	# 종목들의 시세와 시가총액, 비중, 외인비중, 영향력,기여도 8548 
+                          X 업종별이 아니고. 코스피200 위주의 시총비중은 용도가 거의 없음
+CpSysDib.StockOpenSb	# 주식의 장운영정보 X 정지 관리종목등의 정보로. 다르 모듈에 이미 포함.
 =======================================================================================================
 
 CpUtil.CpCybos	# 연결상태
