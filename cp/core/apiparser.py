@@ -82,7 +82,8 @@ class InterfaceParser:
 
 	def get_headervalue_nrow_arg(self):
 		lst = self.lst.filterand(method='GetHeaderValue', arg='type', prop='options')
-		lst = lst.filter(where=lambda row: row.opt in ['rows', 'count', '수신개수', '수신데이터수'])
+		count_fields = {'rows', 'count', '카운트', '수신개수', '수신데이터수', 'data건수', '데이터개수'}
+		lst = lst.filter(where=lambda row: row.opt in count_fields)
 		if  lst.exists:
 			return lst.first.val
 
@@ -144,3 +145,14 @@ class InterfaceParser:
 		if setposition == True:
 			return tuple(argset)
 		return tuple(e[1] for e in argset)
+
+
+	def translate_table(self, records, **trantab):
+		lst = Listorm(records)
+		fields = lst.column_orders
+
+		for field, mapping in trantab.items():
+			if field in fields:
+				lst = lst.map(**{field: mapping})
+		return list(lst)
+

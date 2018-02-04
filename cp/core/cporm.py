@@ -70,7 +70,6 @@ class Cporm:
 			records.append(row)
 		return records
 
-
 	def blockrequest(self):
 		self.cp.BlockRequest()
 

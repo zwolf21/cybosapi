@@ -1,6 +1,7 @@
 import pandas as pd
 from cp.CpSysDib.MarketEye import get_marketeye
 from cp.CpSysDib.StockChart import get_stockchart
+from cp.CpSysDib.CpSvr3744 import get_cpsvr3744
 from cp.CpDib.StockMst import get_stockmst
 from cp.CpDib.StockMstM import get_stockmstm
 from cp.CpDib.StockMst2 import get_stockmst2
@@ -18,8 +19,13 @@ from cp.CpDib.CpSvr8300 import get_cpsvr8300
 from cp.CpDib.CpSvr8561 import get_cpsvr8561 #테마 리스트
 from cp.CpDib.CpSvr8562 import get_cpsvr8562 #테마코드 종목별 매핑
 from cp.CpDib.CpSvr8561T import get_cpsvr8561t #테마코드별 종목 조회
+from cp.CpDib.CpSvr8081 import get_cpsvr8081 # 종목별 체결강도
+from cp.CpDib.CpSvr8082 import get_cpsvr8082 # 업종, 종목코드별, 일별, 체결강도
+from cp.CpDib.CpSvr8083 import get_cpsvr8083 # 종목/업종 ,선물 시간대별 체결강도
+from cp.CpDib.CpSvr8563 import get_cpsvr8563 # 상승율 구분을 두어 상승율 상위 테마 데이터
 
-from .api import get_theme_table
+
+from api import get_theme_table
 
 # r = get_marketeye(
 # 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
@@ -177,15 +183,57 @@ from .api import get_theme_table
 # for row in r:
 # 	print(row)
 
-r = get_cpsvr8561()
-for row in r:
-	print(row)
+# r = get_cpsvr8561()
+# for row in r:
+# 	print(row)
 
-r = get_cpsvr8561t(tcode=346)
-for row in r:
-	print(row)
+# r = get_cpsvr8561t(tcode=346)
+# for row in r:
+# 	print(row)
 
 
 # r = get_stocklist_by_market(type='거래소'
 # )
 # print(r)
+
+
+# r = get_cpsvr8081(
+# 	market_kind='코스닥',
+# 	order_kind='최근50일*',
+# 	stock_amount_kind='10만주*',
+# 	fields=['종목코드', '종목명', '전일대비', '전일대비율', '현재가', '거래량', '체결강도*'],
+# )
+# for row in r:
+# 	print(row)
+# r = get_cpsvr8082(
+# 	code='A093640', # 종목코드 or 업종코드
+# 	recent_days='60개*', # 최근일수 구분:[20*, 60*, 120*]
+# 	fields = ['일자', '체결*', '주가', '전일*', '거래량']
+# )
+# for row in r:
+# 	print(row)
+
+# r = get_cpsvr8083(
+# 	code='A093640', # 종목/업종/선물 코드
+# 	recent_minutes='60개의최근분수', # 최근분수 구분
+# 	fields= ['시간', '체결강도*', '주가', '전일대비*', '거래량'] 
+# )
+# for row in r:
+# 	print(row)
+
+# r = get_cpsvr8563(
+# 	inc_kind='5일대비상승율상위순', # 상승율 구분:[전일대비상승율상위순, ~하위순, 5일대비~, 상승종목비율상위, ~하위]
+# 	fields=[
+# 		'테마코드', '테마명', '구성종목수', '*일전대비', '상승종목수', '하락종목수', '상승종목비율'
+# 	]
+# )
+# for row in r:
+# 	print(row)
+
+# r = get_cpsvr3744(
+# 	codes = "A000660", # 종목코드 최대 50개
+# 	fields = ['일자', '구성종목지수*']
+# )
+# for row in r:
+# 	print(row)
+
