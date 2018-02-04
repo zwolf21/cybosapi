@@ -1,128 +1,69 @@
-METHODS_INTERFACES = {
+import pandas as pd
 
-	'SetInputValue': {
-		'code': {
-			'position': 0,
-			'type': ['str'],
-			'essential': True,
-		},
-	},
-	'GetHeaderValue': {
-		'type': {
-			'position': 0,
-			'type': ['long'],
-			'essential': True,
-			'options': {
-				0: 'rows',
-			},
+from cp.core import naver_upjong
+
+from cp.CpSysDib.MarketEye import get_marketeye
+from cp.CpSysDib.StockChart import get_stockchart
+from cp.CpDib.StockMst import get_stockmst
+from cp.CpDib.StockMstM import get_stockmstm
+from cp.CpDib.StockMst2 import get_stockmst2
+from cp.CpDib.StockCur import get_stockcur
+from cp.CpDib.StockJpBid import get_stockjpbid
+from cp.CpDib.StockBid import get_stockbid
+from cp.CpDib.StockWeek import get_stockweek
+from cp.CpDib.CpSvr7819C import get_cpsvr7819c
+from cp.CpDib.StockIndexIR import get_stockindexir
+from cp.CpUtil.CpCodeMgr import CpCodeManager, get_stocklist_by_market
+from cp.CpUtil.CpUsCode import get_us_code_list, uscode2name
+from cp.CpUtil.CpStockCode import CpStockCode, get_code_table, get_count
+from cp.CpSysDib.CpMarketWatch import get_stockmarket_watch
+from cp.CpDib.CpSvr8300 import get_cpsvr8300
+from cp.CpDib.CpSvr8561 import get_cpsvr8561 #테마 리스트
+from cp.CpDib.CpSvr8562 import get_cpsvr8562 #테마코드 종목별 매핑
+from cp.CpDib.CpSvr8561T import get_cpsvr8561t #테마코드별 종목 조회
+
+
+def get_theme_table(count=None):
+	theme_list = get_cpsvr8561()
+	if count is not None:
+		theme_list = theme_list[:count]
+	themes = []
+	for theme in theme_list:
+		theme_cd = theme['테마코드']
+		code_list = get_cpsvr8561t(tcode=theme_cd)
+		for codeset in code_list:
+			codeset.update(theme)
+			themes.append(codeset)
+	return themes
+
+
+def get_base_records():
+	theme_df = pd.DataFrame(get_theme_table())
+	code_df = pd.DataFrame(get_code_table())
+	base_df = pd.merge(code_df, theme_df, how='left')
+
+	def get_code_annotation(code):
+		ccm = CpCodeManager(code)
+		annotate = {
+			'부구분': ccm.stock_section_kind,
+			'소속부': ccm.stock_market_kind,
 		}
-	},
-	'GetDataValue': {
-		'type': {
-			'position': 0,
-			'type': ['str'],
-			'essential': True,
-			'options': {
-				0 : "종목코드",
-				1 : "종목명",
-				2 : "대비",
-				3 : "대비구분코드",
-				4 : "현재가",
-				5 : "매도호가",
-				6 : "매수호가",
-				7 : "거래량",
-				8 : "장구분플래그",
-				9 : "예상체결가",
-				10: "예상체결가전일대비",
-				11: "예상체결수량",
-			}
-		},
-		'index': {
-			'position': 1,
-			'type': ['long'],
-			'essential': True,
-		},
-	},	
-}
+		return annotate
+
+	annomap = {cd: get_code_annotation(cd) for cd in base_df['종목코드']}
+
+	base_df['부구분'] = base_df['종목코드'].apply(lambda cd: annomap[cd]['부구분'])
+	base_df['소속부'] = base_df['종목코드'].apply(lambda cd: annomap[cd]['소속부'])
+	base_df['표준종목코드'] = base_df['종목코드'].str[1:]
+
+	nupjong_df = pd.DataFrame(naver_upjong.scrap())
+	base_df = pd.merge(base_df, nupjong_df, how='left')
+	return base_df
 
 
 
 
-from listorm import Listorm
-from fnmatch import fnmatch
-from collections import OrderedDict
-from itertools import zip_longest
-from win32com.client import Dispatch
 
-class InterfaceParser:
 
-	def __init__(self, module_name, interface):
-		records = self._flatten_interface(interface)		
-		self.lst = Listorm(records)
-		self.cp = Dispatch(module_name)
-		
-	def _flatten_interface(self, interface, levelnames=['method', 'arg', 'prop', 'value', 'options']):
-		from itertools import zip_longest
-		def dictraversal(d, path=None):
-			path = path or []
-			visited = []
-			for key, val in d.items():
-				if isinstance(val, dict):
-					visited += dictraversal(val, path+[key])
-				else:
-					subpath = path + [key, val]
-					visited.append(subpath)
-			return visited
-		return [dict(zip_longest(levelnames, r)) for r in dictraversal(interface)]
 
-	def encode_fields(self, method, fields, arg='type'):
-		context = self.lst.filter(lambda row: row.options and row.method==method and arg==arg)
-		if not context:
-			raise ValueError('No options fields in {} on {}'.format(arg, method))
-		matches = []
-		headers = []
 
-		for pat in fields:
-			for row in context:
-				opt = row.options
-				if opt in matches:
-					continue
-				if fnmatch(opt, pat):
-					matches.append(row.value)
-					headers.append(row.options)
-		return matches
-
-	def decode_fields(self, method, raw_fields, arg='type'):
-		context = self.lst.filter(lambda row: row.options and row.method==method and arg==arg)
-		if not context:
-			raise ValueError('No options fields in {} on {}'.format(arg, method))
-		columns = context.filter(lambda row: row.value in raw_fields).column_values('options')
-		columns = []
-
-		for raw in raw_fields:
-			r = context.filterand(value=raw)
-			if r:
-				columns.append(r.first.options)
-		return columns
-
-	def assign_args(self, method, *args):
-		func = getattr(self.cp, method)
-		for arg in args:
-			if isinstance(arg, (int, str, bytes)):
-				arg = (arg, )
-			func(*arg)
-		return obj
-
-	def retrieve_args(self, method, *args):
-		func = getattr(self.cp, method)
-		record = {}
-		for arg in args:
-			if isinstance(arg, (int, str, bytes)):
-				arg = (arg, )
-				ret = func(*arg)
-				record[arg[0]] = ret
-		return record
-
-ip = InterfaceParser(METHODS_INTERFACES)
-
-ip.assign_args('SetInputValue', 'A003540')

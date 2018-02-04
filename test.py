@@ -19,6 +19,8 @@ from cp.CpDib.CpSvr8561 import get_cpsvr8561 #테마 리스트
 from cp.CpDib.CpSvr8562 import get_cpsvr8562 #테마코드 종목별 매핑
 from cp.CpDib.CpSvr8561T import get_cpsvr8561t #테마코드별 종목 조회
 
+from .api import get_theme_table
+
 # r = get_marketeye(
 # 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
 # 	contract='호가비교방식'
@@ -175,15 +177,15 @@ from cp.CpDib.CpSvr8561T import get_cpsvr8561t #테마코드별 종목 조회
 # for row in r:
 # 	print(row)
 
-# r = get_cpsvr8561()
-# for row in r:
-# 	print(row)
+r = get_cpsvr8561()
+for row in r:
+	print(row)
 
-# r = get_cpsvr8561t(tcode=346)
-# for row in r:
-# 	print(row)
+r = get_cpsvr8561t(tcode=346)
+for row in r:
+	print(row)
 
 
-r = get_stocklist_by_market(type='거래소'
-)
-print(r)
+# r = get_stocklist_by_market(type='거래소'
+# )
+# print(r)

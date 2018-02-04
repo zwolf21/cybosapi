@@ -4,7 +4,7 @@ DESCRIPTION = {
     'summary': '',
     'point': '''
     ''',
-    'default': ['종목*', '현재가', '대비*', '거래량', '전일동시간대비'],
+    'default': ['종목*'],
 }
 
 MODULE_NAME = 'dscbo1.CpSvr8561T'
