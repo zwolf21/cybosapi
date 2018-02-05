@@ -145,14 +145,3 @@ class InterfaceParser:
 		if setposition == True:
 			return tuple(argset)
 		return tuple(e[1] for e in argset)
-
-
-	def translate_table(self, records, **trantab):
-		lst = Listorm(records)
-		fields = lst.column_orders
-
-		for field, mapping in trantab.items():
-			if field in fields:
-				lst = lst.map(**{field: mapping})
-		return list(lst)
-

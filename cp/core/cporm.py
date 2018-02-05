@@ -1,4 +1,7 @@
+import functools
 import win32com.client
+
+from listorm import Listorm
 
 from .apiparser import InterfaceParser
 
@@ -75,3 +78,26 @@ class Cporm:
 
 	def subscribe(self):
 		self.cp.Subscribe()
+
+	@staticmethod
+	def translate(trantab):
+		def decorate(func):
+			def _translate(records, trantab):
+				lst = Listorm(records)
+				fields = lst.column_orders
+				for field, mapping in trantab.items():
+					if field in fields:
+						lst = lst.map(**{field: mapping})
+				records = [dict(row) for row in lst]
+				return  records
+			@functools.wraps(func)
+			def wrapper(*args, **kwargs):
+				records = func(*args, **kwargs)
+				return _translate(records, trantab)
+			return wrapper
+		return decorate
+
+
+
+
+

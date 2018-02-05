@@ -93,11 +93,39 @@ METHODS_INTERFACES = {
     },  
 }
 
-def get_stockbid(fields, types, **kwargs):
+TRAN_TAB = {
+    '체결비교방식': {
+        ord('C'): '체결가',
+        ord('H'): '호가',
+    },
+    '체결상태': {
+        ord('1'): '매수',
+        ord('2'): '매도',
+    },
+    '장구분플래그': {
+        ord('1'): '동시호가시간(예상체결)',
+        ord('2'): '장중 (체결)'
+    },
+}
+
+@Cporm.translate(TRAN_TAB)
+def get_stockbid(fields, addons=None, **kwargs):
+    '''주식 종목의 시간대별 체결값
+        records = get_stockbid(
+            code='A078070', # 종목코드
+            count=10, # 요청개수: 최대80
+            contract_type='호가비교방식', # 체결 비교 방식: [체결가비교방식, 호가비교방식]
+            addons=['종목코드', '누적*', '체결*'],
+            fields=[
+                '시각', '전일대비', '매도호가', '매수호가', '현재가', '거래량',
+                '순간체결량', '체결상태', '체결강도', '시각(초)', '장구분플래그',
+            ]
+        )
+    '''
     crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
     crm.set_inputvalues(**kwargs)
     crm.blockrequest()
-    headerset = crm.get_headervalues(types)
+    headerset = crm.get_headervalues(addons) if addons else {}
     orderd_field = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
     records = crm.get_datavalue_table(orderd_field)
     for row in records:

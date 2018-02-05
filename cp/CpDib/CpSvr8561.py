@@ -57,14 +57,13 @@ METHODS_INTERFACES = {
     },  
 }
 
-def get_cpsvr8561():
+def get_cpsvr8561(fields=['테마코드', '테마순서', '테마명']):
 	'''테마별 테마코드,테마명을 요청하고 수신합니다
 	'''
 	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
 	crm.blockrequest()
 	nrows = crm.cp.GetHeaderValue(0)
-	ordered_fields = ['테마코드', '테마순서', '테마명']
-	records = crm.get_datavalue_table(ordered_fields)
+	records = crm.get_datavalue_table(fields)
 	return records
 
 

@@ -47,14 +47,13 @@ METHODS_INTERFACES = {
     },  
 }
 
-def get_cpsvr8562(**kwargs):
+def get_cpsvr8562(fields, **kwargs):
     '''종목별 테마 조회 데이터를 요청하고 수신합니다.
     '''
     crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
     crm.set_inputvalues(**kwargs)
     crm.blockrequest()
-    ordered_fields = ['테마코드', '테마명']
-    records = crm.get_datavalue_table(ordered_fields)
+    records = crm.get_datavalue_table(fields)
     for row in records:
         row['종목코드'] = kwargs.get('code')
     return records
