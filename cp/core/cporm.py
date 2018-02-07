@@ -83,12 +83,17 @@ class Cporm:
 	def translate(trantab):
 		def decorate(func):
 			def _translate(records, trantab):
+				isdict = isinstance(records, dict)
+				if isdict:
+					records = [records]
 				lst = Listorm(records)
 				fields = lst.column_orders
 				for field, mapping in trantab.items():
 					if field in fields:
 						lst = lst.map(**{field: mapping})
 				records = [dict(row) for row in lst]
+				if isdict and records:
+					return records[0]
 				return  records
 			@functools.wraps(func)
 			def wrapper(*args, **kwargs):

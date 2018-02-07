@@ -1,6 +1,5 @@
-import win32com.client
+from cp.core.cporm import Cporm
 
-from ..utils import *
 
 DESCRIPTION = {
 	'summary': '복수 종목 일괄조회 7059',
@@ -51,7 +50,7 @@ METHODS_INTERFACES = {
 			'type': ['long'],
 			'essential': True,
 			'options': {
-				0: 'rows',
+				0: 'count',
 			},
 		}
 	},
@@ -66,7 +65,7 @@ METHODS_INTERFACES = {
 				2 : "시간",
 				3 : "현재가",
 				4 : "전일대비",
-				5 : "상태구분 ",
+				5 : "상태구분",
 				6 : "시가",
 				7 : "고가",
 				8 : "저가",
@@ -101,24 +100,72 @@ METHODS_INTERFACES = {
 	},	
 }
 
+TRAN_TAB = {
+	"상태구분": {
+		ord('1'): "상한",
+		ord('2'): "상승",
+		ord('3'): "보합",
+		ord('4'): "하한",
+		ord('5'): "하락",
+		ord('6'): "기세상한",
+		ord('7'): "기세상승",
+		ord('8'): "기세하한",
+		ord('9'): "기세하락",
+	},
+	"체결가비교Flag": {
+		ord('O'): "매도",
+		ord('B'): "매수",
+	},
+	"호가비교Flag": {
+		ord('O'): "매도",
+		ord('B'): "매수",		
+	},
+	"동시호가구분": {
+		ord('1'): "동시호가",
+		ord('2'): "장중",
+	},
+	"예상체결가상태구분": {
+		ord('1'): "상한",
+		ord('2'): "상승",
+		ord('3'): "보합",
+		ord('4'): "하한",
+		ord('5'): "하락",
+		ord('6'): "기세상한",
+		ord('7'): "기세상승",
+		ord('8'): "기세하한",
+		ord('9'): "기세하락",		
+	},
+}
 
 
-def get_stockmst2(code, fields):
-	if isinstance(code, (list, tuple, set)):
-		code = ','.join(code)
-	cp = win32com.client.Dispatch(MODULE_NAME)
-	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code)
-	cp = set_inputvalue(cp, setinputvalue_argset)
-	nrows_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
-	nrows = cp.GetHeaderValue(nrows_arg)
+@Cporm.translate(TRAN_TAB)
+def get_stockmst2(codes, fields):
+	if not isinstance(codes, str):
+		codes = ','.join(codes)
+	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
+	crm.set_inputvalues(code=codes)
+	crm.blockrequest()
+	ordered_fields = crm.get_ordered_fields(fields)
+	return crm.get_datavalue_table(ordered_fields)
 
-	fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetDataValue', fields)
-	records = []
-	for r in range(nrows):
-		row = {}
-		for colnm in fields:
-			args = encode_args(METHODS_INTERFACES, 'GetDataValue', indexed=False, flated=True, type=colnm, index=r)
-			data = cp.GetDataValue(*args)
-			row[colnm] = data
-		records.append(row)
-	return records
+
+
+# def get_stockmst2(code, fields):
+# 	if isinstance(code, (list, tuple, set)):
+# 		code = ','.join(code)
+# 	cp = win32com.client.Dispatch(MODULE_NAME)
+# 	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code)
+# 	cp = set_inputvalue(cp, setinputvalue_argset)
+# 	nrows_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
+# 	nrows = cp.GetHeaderValue(nrows_arg)
+
+# 	fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetDataValue', fields)
+# 	records = []
+# 	for r in range(nrows):
+# 		row = {}
+# 		for colnm in fields:
+# 			args = encode_args(METHODS_INTERFACES, 'GetDataValue', indexed=False, flated=True, type=colnm, index=r)
+# 			data = cp.GetDataValue(*args)
+# 			row[colnm] = data
+# 		records.append(row)
+# 	return records
