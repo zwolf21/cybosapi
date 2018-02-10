@@ -195,26 +195,28 @@ from cp.CpDib.StockWeek import get_stockweek
 # print(pd.DataFrame(records))
 
 
-print('*'*10, 'get_stockmstm test', '*'*20)
-records = get_stockmstm(
-    codes=['A003540','A000060','A000010'],
-    fields = [
-        '종목코드', '종목명', '대비', '대비구분코드', '현재가', '매도호가', '매수호가', '거래량', '장구분플래그', '예상*'
-    ]
-)
-print(pd.DataFrame(records))
-
-
-# print('*'*10, 'get_stockweek test', '*'*20)
-# records = get_stockweek(
-# 	code = 'A003540',
-# 	fields=[
-# 		'일자', '시가', '고가', '저가', '종가', '전일대비', '누적거래량',
-# 		'외인*', '등락률', '대비부호', '기관*', '시간외*'
-# 	],
-# 	npages=100
+# print('*'*10, 'get_stockmstm test', '*'*20)
+# records = get_stockmstm(
+#     codes=['A003540','A000060','A000010'],
+#     fields = [
+#         '종목코드', '종목명', '대비', '대비구분코드', '현재가', '매도호가', '매수호가', '거래량', '장구분플래그', '예상*'
+#     ]
 # )
 # print(pd.DataFrame(records))
+
+
+print('*'*10, 'get_stockweek test', '*'*20)
+records = get_stockweek(
+	code = 'A003540',
+	fields=[
+		'일자', '시가', '고가', '저가', '종가', '전일대비', '누적거래량',
+		'외인*', '등락률', '대비부호', '기관*', '시간외*'
+	],
+	pages=100
+)
+df = pd.DataFrame(records)
+print(df)
+df.to_excel("GETSTOCKWEEK.xlsx")
 
 
 

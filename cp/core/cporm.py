@@ -48,33 +48,30 @@ class Cporm:
 			elif isinstance(arg, str):
 				return arg.split(',')
 
-	def get_datavalue_table(self, ordered_fields, npages=1):
-		ret = []
-		for page in range(npages):
-			nrows = self.get_rows_count()
-			ncols = self.get_columns_count()
-			records = []
-			if ncols is None:
-				coliter = self.ip.encode_field_options('GetDataValue',
-					option='type', fields=ordered_fields, indexing=False
-				)
-				if isinstance(coliter, (str, int, bytes)):
-					coliter = [coliter]
+	def get_datavalue_table(self, ordered_fields):
+		nrows = self.get_rows_count()
+		ncols = self.get_columns_count()
+		records = []
+		if ncols is None:
+			coliter = self.ip.encode_field_options('GetDataValue',
+				option='type', fields=ordered_fields, indexing=False
+			)
+			if isinstance(coliter, (str, int, bytes)):
+				coliter = [coliter]
+		else:
+			if isinstance(ncols, int):
+				coliter = range(ncols)
 			else:
-				if isinstance(ncols, int):
-					coliter = range(ncols)
-				else:
-					coliter = list(map(str.strip, ncols.split(',')))
+				coliter = list(map(str.strip, ncols.split(',')))
 
-			for r in range(nrows):
-				values = []
-				for c in coliter:
-					value = self.cp.GetDataValue(c, r)
-					values.append(value)
-				row = dict(zip(ordered_fields, values))
-				records.append(row)
-				ret+= records
-		return ret
+		for r in range(nrows):
+			values = []
+			for c in coliter:
+				value = self.cp.GetDataValue(c, r)
+				values.append(value)
+			row = dict(zip(ordered_fields, values))
+			records.append(row)
+		return records
 		
 	def blockrequest(self):
 		self.cp.BlockRequest()
