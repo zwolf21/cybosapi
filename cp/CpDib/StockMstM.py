@@ -72,11 +72,40 @@ METHODS_INTERFACES = {
 }
 
 
-def get_stockmstm(code, fields=DESCRIPTION['default']):
-	if isinstance(code, (list, tuple, set)):
-		code = ''.join(code)
+TRANTAB = {
+	"대비구분코드": {
+		1 : "상한",
+		2 : "상승",
+		3 : "보합",
+		4 : "하한",
+		5 : "하락",
+		6 : "기세상한",
+		7 : "기세상승",
+		8 : "기세하한",
+		9 : "기세하락",
+	},
+	"장구분플래그": {
+		ord('0'): "동시호가와장중이외의시간",
+		ord('1'): "동시호가시간",
+		ord('2'): "장중",
+	},
+
+}
+
+@Cporm.translate(TRANTAB)
+def get_stockmstm(codes, fields=DESCRIPTION['default']):
+	'''주식 복수 종목에 대해 간단한 내용을 일괄 조회
+		records = get_stockmstm(
+		    codes=['A003540','A000060','A000010'],
+		    fields = [
+		        '종목코드', '종목명', '대비', '대비구분코드', '현재가', '매도호가', '매수호가', '거래량', '장구분플래그', '예상*'
+		    ]
+		)
+	'''
+	if isinstance(codes, (list, tuple, set)):
+		codes = ''.join(codes)
 	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
-	crm.set_inputvalues(code=code)
+	crm.set_inputvalues(code=codes)
 	crm.blockrequest()
 	ordered_fields = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
 	records = crm.get_datavalue_table(ordered_fields)

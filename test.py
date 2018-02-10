@@ -1,4 +1,5 @@
 import pandas as pd
+
 from cp.CpSysDib.MarketEye import get_marketeye
 from cp.CpSysDib.StockChart import get_stockchart
 from cp.CpSysDib.CpSvr3744 import get_cpsvr3744
@@ -6,12 +7,12 @@ from cp.CpDib.StockMst import get_stockmst
 from cp.CpDib.StockMstM import get_stockmstm
 from cp.CpDib.StockMst2 import get_stockmst2
 from cp.CpDib.StockCur import get_stockcur
-from cp.CpDib.StockJpBid import get_stockjpbid
+# from cp.CpDib.StockJpBid import get_stockjpbid
 from cp.CpDib.StockBid import get_stockbid
 from cp.CpDib.StockWeek import get_stockweek
 from cp.CpDib.CpSvr7819C import get_cpsvr7819c
 from cp.CpDib.StockIndexIR import get_stockindexir
-from cp.CpUtil.CpCodeMgr import CpCodeManager, get_stocklist_by_market
+from cp.CpUtil.CpCodeMgr import *
 from cp.CpUtil.CpUsCode import get_us_code_list, uscode2name
 from cp.CpUtil.CpStockCode import CpStockCode, get_code_table, get_count
 from cp.CpSysDib.CpMarketWatch import get_stockmarket_watch
@@ -25,7 +26,7 @@ from cp.CpDib.CpSvr8083 import get_cpsvr8083 # 종목/업종 ,선물 시간대�
 from cp.CpDib.CpSvr8563 import get_cpsvr8563 # 상승율 구분을 두어 상승율 상위 테마 데이터
 
 
-from api import get_theme_table
+# from api import get_theme_table
 
 # r = get_marketeye(
 # 	code='A003540', field=['현재가', 'PER', '최근분기년월', 'EPS', '결산년월', 'BPS', '시간', '당일*'], 
@@ -231,7 +232,7 @@ from api import get_theme_table
 # 	print(row)
 
 # r = get_cpsvr3744(
-# 	codes = "A000660", # 종목코드 최대 50개
+# 	codes = [ "A030350"], # 종목코드 최대 50개
 # 	fields = ['일자', '구성종목지수*']
 # )
 # for row in r:

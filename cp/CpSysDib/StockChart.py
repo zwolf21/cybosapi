@@ -148,7 +148,7 @@ METHODS_INTERFACES = {
 				ord('0'): '무수정',
 				ord('1'): '수정',
 			},
-			'default': ord('0'),
+			'default': ord('1'),
 		},
 		'stockamt': {
 			'position': 10,

@@ -57,7 +57,7 @@ METHODS_INTERFACES = {
 	'GetDataValue': {
 		'type': {
 			'position': 0,
-			'type': ['str'],
+			'type': ['long'],
 			'essential': True,
 			'options': {
 				0 : "종목코드",
@@ -112,7 +112,7 @@ TRAN_TAB = {
 		ord('8'): "기세하한",
 		ord('9'): "기세하락",
 	},
-	"체결가비교Flag": {
+	"체결가비교Flag":{
 		ord('O'): "매도",
 		ord('B'): "매수",
 	},
@@ -145,27 +145,9 @@ def get_stockmst2(codes, fields):
 	crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
 	crm.set_inputvalues(code=codes)
 	crm.blockrequest()
-	ordered_fields = crm.get_ordered_fields(fields)
+	ordered_fields = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
 	return crm.get_datavalue_table(ordered_fields)
 
 
 
-# def get_stockmst2(code, fields):
-# 	if isinstance(code, (list, tuple, set)):
-# 		code = ','.join(code)
-# 	cp = win32com.client.Dispatch(MODULE_NAME)
-# 	setinputvalue_argset = encode_args(METHODS_INTERFACES, 'SetInputValue', code=code)
-# 	cp = set_inputvalue(cp, setinputvalue_argset)
-# 	nrows_arg = encode_args(METHODS_INTERFACES, 'GetHeaderValue', indexed=False, flated=True, type='rows')
-# 	nrows = cp.GetHeaderValue(nrows_arg)
 
-# 	fields = expand_field_fnmatch(METHODS_INTERFACES, 'GetDataValue', fields)
-# 	records = []
-# 	for r in range(nrows):
-# 		row = {}
-# 		for colnm in fields:
-# 			args = encode_args(METHODS_INTERFACES, 'GetDataValue', indexed=False, flated=True, type=colnm, index=r)
-# 			data = cp.GetDataValue(*args)
-# 			row[colnm] = data
-# 		records.append(row)
-# 	return records

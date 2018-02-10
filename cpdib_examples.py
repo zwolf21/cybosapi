@@ -13,7 +13,8 @@ from cp.CpDib.StockIndexIR import get_stockindexir # 업종 코드에 관한 데
 from cp.CpDib.StockJpBid2 import get_stockjpbid2 # 주식 종목에 대해 매도,매수에 관한 1차 ~ 10차 호가 , 호가잔량
 from cp.CpDib.StockMst import get_stockmst # 주식 종목의 현재가에 관련된 데이터
 from cp.CpDib.StockMst2 import get_stockmst2 # 주식 복수 종목에 대해 일괄 조회
-
+from cp.CpDib.StockMstM import get_stockmstm  # 주식 복수 종목에 대해 간단한 내용을 일괄 조회 
+from cp.CpDib.StockWeek import get_stockweek 
 
 # print('*'*10, 'get_cpsvr8081 test', '*'*20)
 # print('**'*10, 'get_cpsvr8081 test market_kind="코스닥"', '*'*20)
@@ -169,19 +170,51 @@ from cp.CpDib.StockMst2 import get_stockmst2 # 주식 복수 종목에 대해 �
 #     addons=['종목코드', '시각', '총매도잔량*', '시간외*'],
 #     fields=['*호가', '*잔량', '*대비']
 # )
-# print(record)
+# print(pd.DataFrame(records))
 
 
-print('*'*10, 'get_stockmst test', '*'*20)
-record = get_stockmst(
-    code='A078070', # 종목코드
-    fields=[
-        '종목코드', '종목명', '대신업종코드', '그룹코드', '시간', '소속구분', '대중소', '*한가', '*호가', '52*',
-        '누적거래대금', '관리구분', '거래정지구분', '불성실*'
+# print('*'*10, 'get_stockmst test', '*'*20)
+# records = get_stockmst(
+#     code='A078070', # 종목코드
+#     fields=[
+#         '종목코드', '종목명', '대신업종코드', '그룹코드', '시간', '소속구분', '대중소', '*한가', '*호가', '52*',
+#         '누적거래대금', '관리구분', '거래정지구분', '불성실*', '누적*',
+#     ]
+# )
+# print(pd.DataFrame([records]))
+
+
+# print('*'*10, 'get_stockmst2 test', '*'*20)
+# records = get_stockmst2(
+#     codes=['A078070', 'A093640'], # 종목코드
+#     fields=[
+#         '종목코드', '종목명', '시간', '현재가', '전일대비', '시가', '고가', '저가', '매도호가', '매수호가',
+#         '거래*', '상장주식수',
+#     ]
+# )
+# print(pd.DataFrame(records))
+
+
+print('*'*10, 'get_stockmstm test', '*'*20)
+records = get_stockmstm(
+    codes=['A003540','A000060','A000010'],
+    fields = [
+        '종목코드', '종목명', '대비', '대비구분코드', '현재가', '매도호가', '매수호가', '거래량', '장구분플래그', '예상*'
     ]
 )
-print(record)
+print(pd.DataFrame(records))
 
+
+# print('*'*10, 'get_stockweek test', '*'*20)
+# records = get_stockweek(
+# 	code = 'A003540',
+# 	fields=[
+# 		'일자', '시가', '고가', '저가', '종가', '전일대비', '누적거래량',
+# 		'외인*', '등락률', '대비부호', '기관*', '시간외*'
+# 	],
+# 	npages=100
+# )
+# print(pd.DataFrame(records))
 
 
 

@@ -105,14 +105,16 @@ METHODS_INTERFACES = {
     },  
 }
 
-def get_stockweek(fields, extras=None, **kwargs):
-    extras = extras or None
+def get_stockweek(fields, addon=['종목코드', '날짜'], npages=1, **kwargs):
+    '''주식 종목에 대해 일자별 주가 데이터 (최고 10년치 데이터)
+    '''
+    addon = addon or None
     crm = Cporm(MODULE_NAME, METHODS_INTERFACES)
     crm.set_inputvalues(**kwargs)
     crm.blockrequest()
-    ext = crm.get_headervalues(extras)
+    ext = crm.get_headervalues(addon)
     ordered_fields = crm.get_ordered_fields('GetDataValue', option='type', fields=fields)
-    records = crm.get_datavalue_table(ordered_fields)
+    records = crm.get_datavalue_table(ordered_fields, npages=npages)
     for row in records:
         row.update(ext)
     return records
